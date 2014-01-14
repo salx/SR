@@ -7,7 +7,7 @@ SiFu fragen:
 ToDo: 
 - Linien rund um Segmente zeichnen
 - Ordnen nach Parteifarben (da stecke ich gerade)
-- Buttons für: Geschlecht, Partei, Bestellungsgremien
+- Buttons für: sex, Partei, Bestellungsgremien
 
 */
 
@@ -27,9 +27,8 @@ ToDo:
 		.attr("height", margin.top + margin.bottom )
 	   .append("g")
 	   	.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
+/*
 	var partition = d3.layout.partition()
-	/*
 		.sort(function(a, b) {
 			if(a.depth === 1){
 			return d3.ascending(a.name, b.name); 
@@ -38,7 +37,6 @@ ToDo:
 		}
 		})
 */
-		.size([2 * Math.PI, radius])
 
 	var arc = d3.svg.arc()
 		.startAngle(function(d){ return d.x; })
@@ -99,19 +97,41 @@ ToDo:
 			parteien[ person.partei ].value++;
 			root.value++;
 		} );
-        //console.log(parteien)
 		root.children = d3.values( parteien );
-		//console.log(root);
 		drawChart(root);
 	}
 
-	function transitionGeschlecht(){}
+	function transitionGeschlecht(){
+		var root = {
+			name: "Stiftungsrat",
+			value: 0,
+			children: []
+		};
+		var sexes = {};
+		dataset.forEach( function( person ) {
+			if( !sexes[ person.sex ] ) {
+				sexes[ person.sex ] = {
+					name: person.sex,
+					value: 0,
+					children: []
+				}
+			}
+			sexes[ person.sex ].children.push( person );
+			sexes[ person.sex ].value++;
+			root.value++;
+		} );
+		root.children = d3.values( sexes );
+		drawChart( root );
+	}
 	
 			//comments from mbostock:
 				// Compute the initial layout on the entire tree to sum sizes.
 	  			// Also compute the full name and fill color for each node,
 	  			// and stash the children so they can be restored as we descend.
 	function drawChart(root){
+		var partition = d3.layout.partition()
+		.size([2 * Math.PI, radius]);
+
 		partition 
 				.value(function(d) { return d.value; })
 							.nodes(root)
@@ -120,8 +140,7 @@ ToDo:
 								d.sum = d.value;
 								d.key = key(d); // siehe unten!
 								d.fill = fill(d); // siehe unten!
-							});
-		console.log(partition.nodes)		
+							});		
 							
 							// Now redefine the value function to use the previously-computed sum.
 						partition
