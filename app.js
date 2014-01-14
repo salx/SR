@@ -1,9 +1,10 @@
 /*
 SiFu fragen: 
 - wie kann ich Text-Labels dynamisch generieren UND ausrichten? (z.B.: Center)?
-- wie kann ich den letzten Ring anders färben als die beiden inneren?
 - wie kann ich im Center Fotos verlinken ab einer gewissen Stufe?
 . wie gebe ich die Farben als Array an (leichteste Frage)
+
+ToDo: 
 
 */
 
@@ -97,8 +98,8 @@ SiFu fragen:
 		}
 
 		function zoomOut(p){
+			if (!p.parent) return; 
 			label.text("");
-			if (!p.parent) return;
 			zoom(p.parent, p, p.parent.name);
 		}
 
