@@ -164,13 +164,31 @@ SiFu fragen:
 		//console.log(d);
 		//var i= d.
 		var p= d;
-		
-		while(p.depth > 1) p= p.parent;
-		//wenn ich die Farben anbebe: mit index arbeiten!
-		//var c = color[];
-		var c = d3.lab(color(p.name));
+		var c;
+
+		if(p.depth === 1){ //p= p.parent;
+			var c = d3.lab(color(p.name));
 		//c.l = luminance(d.sum);
 		return c;
+		}
+		else if(p.depth === 2)
+			{
+			if(p.partei === "SPÖ")
+				var c = "red";
+			if(p.partei === "ÖVP")
+				var c = "black";
+			if(p.partei === "FPÖ")
+				var c = "blue";
+			if(p.partei === "Grüne")
+				var c = "green";
+			if(p.partei === "BZÖ")
+				var c = "orange";
+			if(p.partei === "unabhängig" )
+				var c = "grey";
+			if(p.partei === "Krone")
+				var c = "teal";
+			return c;
+		}
 	}
 
 	function arcTween(b) {
