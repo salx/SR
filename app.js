@@ -43,116 +43,122 @@ ToDo:
 		.endAngle(function(d){ return d.x + d.dx - 0.01 / (d.depth + 0.5); })//erklären...
 		.innerRadius(function(d){ return radius / 3 * d.depth; })
 		.outerRadius(function(d){ return radius / 3 * (d.depth + 1) -1; });
+
+	transitionGremien();
+
+	function transitionPartei(){ console.log("partei"); }
+
+	function transitionGeschlecht(){console.log("geschlecht"); }
 	
-	d3.json("Stiftungsrat.json", function (error, root){
-		//comments from mbostock:
-			// Compute the initial layout on the entire tree to sum sizes.
-  			// Also compute the full name and fill color for each node,
-  			// and stash the children so they can be restored as we descend.
-		partition 
-			.value(function(d) { return d.value; })
-			.nodes(root)
-			.forEach(function(d){
-				d._children = d.children;
-				d.sum = d.value;
-				d.key = key(d); // siehe unten!
-				d.fill = fill(d); // siehe unten!
-			});
-
-			
-			// Now redefine the value function to use the previously-computed sum.
-		partition
-			.children(function(d, depth) { return depth < 2 ? d._children : null; })
-			.value(function(d) { return d.sum; });
-
-		var center = svg.append("g")
-			.on("click", zoomOut); 
-
-		center.append("circle")
-			.attr("r", radius / 3);
-
-		center.append("title")
-			.text("zoom out");
-
-		var path = svg.selectAll("path")
-			.data(partition.nodes(root).slice(1)) // was macht slice GENAU?
-		  .enter()
-		  	.append("path")
-		  	.attr("d", arc)
-		  	.style("fill", function(d) { return d.fill; })
-		  	.each(function(d) { this._current = updateArc(d); })//woher kommt _current auf einmal??
-		  	.on("click", zoomIn);
-
-		  path.append("title")
-		  	.text("zoom in");
-
-		  var label = center.append("text")
-		  	.text("Stiftungsrat")
-		  	.attr("x", - 45 );
-
-
-		function zoomIn(p){
-			if (p.depth > 1) p = p.parent;
-			if (!p.children) return;
-			zoom(p, p, p.name);
-			label.text("");
-		}
-
-		function zoomOut(p){
-			if (!p.parent) return; 
-			label.text("");
-			zoom(p.parent, p, p.parent.name);
-		}
-
-		function zoom(root, p, labelText ){
-			if (document.documentElement.__transition__) return; //to check for CSS transitions
-
-			var enterArc,
-				exitArc,
-				outsideAngle = d3.scale.linear().domain([0, 2 * Math.PI]);
-
-			function insideArc(d) {
-				return p.key > d.key
-					? {depth: d.depth - 1, x: 0, dx: 0} : p.key < d.key
-					? {depth: d.depth - 1, x: 2 * Math.PI, dx: 0}
-					: {depth: 0, x: 0, dx: 2 * Math.PI};
+	function transitionGremien(){d3.json("Stiftungsrat.json", function (error, root){
+			//comments from mbostock:
+				// Compute the initial layout on the entire tree to sum sizes.
+	  			// Also compute the full name and fill color for each node,
+	  			// and stash the children so they can be restored as we descend.
+			partition 
+				.value(function(d) { return d.value; })
+				.nodes(root)
+				.forEach(function(d){
+					d._children = d.children;
+					d.sum = d.value;
+					d.key = key(d); // siehe unten!
+					d.fill = fill(d); // siehe unten!
+				});
+	
+				
+				// Now redefine the value function to use the previously-computed sum.
+			partition
+				.children(function(d, depth) { return depth < 2 ? d._children : null; })
+				.value(function(d) { return d.sum; });
+	
+			var center = svg.append("g")
+				.on("click", zoomOut); 
+	
+			center.append("circle")
+				.attr("r", radius / 3);
+	
+			center.append("title")
+				.text("zoom out");
+	
+			var path = svg.selectAll("path")
+				.data(partition.nodes(root).slice(1)) // was macht slice GENAU?
+			  .enter()
+			  	.append("path")
+			  	.attr("d", arc)
+			  	.style("fill", function(d) { return d.fill; })
+			  	.each(function(d) { this._current = updateArc(d); })//woher kommt _current auf einmal??
+			  	.on("click", zoomIn);
+	
+			  path.append("title")
+			  	.text("zoom in");
+	
+			  var label = center.append("text")
+			  	.text("Stiftungsrat")
+			  	.attr("x", - 45 );
+	
+	
+			function zoomIn(p){
+				if (p.depth > 1) p = p.parent;
+				if (!p.children) return;
+				zoom(p, p, p.name);
+				label.text("");
 			}
-
-			function outsideArc(d) {
-				return {depth: d.depth + 1, x: outsideAngle(d.x), dx: outsideAngle(d.x + d.dx) - outsideAngle(d.x)};
+	
+			function zoomOut(p){
+				if (!p.parent) return; 
+				label.text("");
+				zoom(p.parent, p, p.parent.name);
 			}
-
-			center.datum(root);
-
-			// When zooming in, arcs enter from the outside and exit to the inside.
-    		// Entering outside arcs start from the old layout.
-    		if (root === p) enterArc = outsideArc, exitArc = insideArc, outsideAngle.range([p.x, p.x+p.dx]);
-
-    		path = path.data(partition.nodes(root).slice(1), function(d) { return d.key; });
-
-			// When zooming out, arcs enter from the inside and exit to the outside.
-    		// Exiting outside arcs transition to the new layout.
-    		if (root !== p) enterArc = insideArc, exitArc = outsideArc, outsideAngle.range([p.x, p.x + p.dx]);
-
-    		d3.transition().duration(d3.event.altKey ? 7500:750).each(function(){
-    			path.exit().transition()
-    				.style("fill-opacity", function(d) { return d.depth === 1 + (root === p) ? 1 : 0; })
-    				.attrTween("d", function(d) { return arcTween.call(this, exitArc(d)); })
-    				.remove();
-
-    			path.enter().append("path")
-    				.style("fill-opacity", function(d) { return d.depth === 2 - (root ===p) ? 1 : 0; })
-    				.style("fill", function(d) { return d.fill; })
-    				.on("click", zoomIn)
-    				.each(function(d) {this._current = enterArc(d); });
-
-    			path.transition()
-    				.each("end", function(){ label.text( labelText )} )// hier braucht's noch eine if-Abfrage f. Zoom-Out
-    				.style("fill-opacity", 1)
-    				.attrTween("d", function(d) { return arcTween.call(this, updateArc(d)); })
-    		});
-		}
-	});
+	
+			function zoom(root, p, labelText ){
+				if (document.documentElement.__transition__) return; //to check for CSS transitions
+	
+				var enterArc,
+					exitArc,
+					outsideAngle = d3.scale.linear().domain([0, 2 * Math.PI]);
+	
+				function insideArc(d) {
+					return p.key > d.key
+						? {depth: d.depth - 1, x: 0, dx: 0} : p.key < d.key
+						? {depth: d.depth - 1, x: 2 * Math.PI, dx: 0}
+						: {depth: 0, x: 0, dx: 2 * Math.PI};
+				}
+	
+				function outsideArc(d) {
+					return {depth: d.depth + 1, x: outsideAngle(d.x), dx: outsideAngle(d.x + d.dx) - outsideAngle(d.x)};
+				}
+	
+				center.datum(root);
+	
+				// When zooming in, arcs enter from the outside and exit to the inside.
+	    		// Entering outside arcs start from the old layout.
+	    		if (root === p) enterArc = outsideArc, exitArc = insideArc, outsideAngle.range([p.x, p.x+p.dx]);
+	
+	    		path = path.data(partition.nodes(root).slice(1), function(d) { return d.key; });
+	
+				// When zooming out, arcs enter from the inside and exit to the outside.
+	    		// Exiting outside arcs transition to the new layout.
+	    		if (root !== p) enterArc = insideArc, exitArc = outsideArc, outsideAngle.range([p.x, p.x + p.dx]);
+	
+	    		d3.transition().duration(d3.event.altKey ? 7500:750).each(function(){
+	    			path.exit().transition()
+	    				.style("fill-opacity", function(d) { return d.depth === 1 + (root === p) ? 1 : 0; })
+	    				.attrTween("d", function(d) { return arcTween.call(this, exitArc(d)); })
+	    				.remove();
+	
+	    			path.enter().append("path")
+	    				.style("fill-opacity", function(d) { return d.depth === 2 - (root ===p) ? 1 : 0; })
+	    				.style("fill", function(d) { return d.fill; })
+	    				.on("click", zoomIn)
+	    				.each(function(d) {this._current = enterArc(d); });
+	
+	    			path.transition()
+	    				.each("end", function(){ label.text( labelText )} )// hier braucht's noch eine if-Abfrage f. Zoom-Out
+	    				.style("fill-opacity", 1)
+	    				.attrTween("d", function(d) { return arcTween.call(this, updateArc(d)); })
+	    		});
+			}
+		});}
 	
 	function key(d){
 		var k = [];
@@ -195,6 +201,19 @@ ToDo:
 	function updateArc(d){
 		return {depth: d.depth, x: d.x, dx: d.dx};
 	}
+
+d3.selectAll("input").on("change", change);
+
+function change(){
+	if(this.value === "gremien") {
+		transitionGremien();
+	} else if(this.value ==="partei"){
+		transitionPartei();
+	} else if(this.value ==="geschlecht"){
+		transitionGeschlecht();
+	}
+
+}
 
 //d3.select(self.frameElement).style("height", margin.top + margin.bottom + "px");
 
