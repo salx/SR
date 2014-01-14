@@ -1,0 +1,98 @@
+circle,
+path{
+	cursor: pointer;
+}
+
+circle {
+	fill: none;
+	/*stroke: #000;*/
+	pointer-events: all;
+}
+.x.axis path {
+	/*display: none;*/
+}
+/*
+g.x.axis {
+	margin: 10px;
+} SiFUu wieso funkt das nicht???
+*/
+
+.axis path {
+	fill: none;
+	stroke: #000;
+	stroke-width: 2px;
+	
+}
+.axis line {
+	fill: none;
+	stroke: #000;
+	stroke-width: 1px;
+	shape-rendering: crispEdges;
+}
+
+text {
+	font: 14px sans-serif;
+	font-family: Arial;
+	font-weight: bold;
+	padding: 5px;
+}
+
+rect {
+	fill: #eee;
+
+}
+
+/*
+rect:hover{
+	fill: orange;
+}
+*/
+.d3-tip {
+	line-height: 1;
+	font-weight: bold;
+	padding: 12px;
+	background: rgba(0, 0, 0, 0.8);
+	color: #fff;
+	border-radius: 2px;
+
+}
+
+.d3-tip:after{
+	box-sizing: border-box;
+	display: inline;
+	font-size: 14px;
+	width: 100%;
+	line-height: 1;
+	color: rgba(0, 0, 0, 0.8);
+	content: "\25BC";
+	position: absolute;
+	text-align: center;
+}
+
+.d3-tip.n:after {
+	margin: -1px 0 0 0;
+	top: 100%;
+	left: 0;
+}
+/*
+SiFu: WIESO funktioniert das? Wieso brauche ich dieses Styling für die northwards-tips?
+Code und Plugin siehe hier:
+http://bl.ocks.org/Caged/6476579
+außerdem: momentan code ich den text hard, vor allem die Text-tags. Geht das auch anders?;
+*/
+.line{
+	fill: none;
+	stroke: #E33;
+	stroke-width: 3px;
+}
+
+.axis line {
+	shape-rendering: crispEdges;
+}
+
+.slider .handle{
+	fill: #fff;
+	stroke: #000;
+	stroke-opacity: 0.5;
+	stroke-width: 1.25px;
+}

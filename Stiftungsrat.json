@@ -1,0 +1,71 @@
+﻿{
+	"name": "Stiftungsrat",
+	"value": 35,
+	"children":[
+	{
+		"name": "Bundesregierung", 
+		"value": 9,
+		"children": [
+			{"name": "Andrea Brem", "value": 1, "partei": "SPÖ"},
+			{"name": "Thomas Drozda", "value": 1},
+			{"name": "Rudolf Ertl", "value": 1},
+			{"name": "Alexander Hartig", "value": 1},
+			{"name": "Franz Krainer", "value": 1},
+			{"name": "Franz Medwenitsch", "value": 1},
+			{"name": "Rainer Rößlhuber", "value": 1},
+			{"name": "Andrea Schellner", "value": 1},
+			{"name": "Thomas Zach", "value": 1}
+		]
+		},
+		{
+			"name": "Parteien", 
+			"value": 6,
+			"children": [
+				{"name": "Wilfried Embacher", "value": 1,"info": "Grüne"},
+				{"name": "Dietmar Hoscher", "value": 1, "info": "SPÖ"},
+				{"name": "Peter Koren", "value": 1, "info": "ÖVP"},
+				{"name": "Werner Muhm", "value": 1, "info": "SPÖ"},
+				{"name": "Alexander Scheer", "value": 1, "info": "BZÖ"},
+				{"name": "Norbert Steger", "value": 1, "info": "FPÖ"}
+			]
+			},
+		{
+			"name": "Bundeslaender", 
+			"value": 9,
+			"children": [
+				{"name": "Margit Hauft", "value": 1, "info": "Oberösterreich"},
+				{"name": "Norbert Kettner", "value": 1, "info": "Wien"},
+				{"name": "Alberich Klinger", "value": 1, "info": "Niederösterreich"},
+				{"name": "Brigitte Kulovits-Rupp", "value": 1, "info": "Burgenland"},
+				{"name": "Matthias Limbeck", "value": 1, "info": "Salzburg"},
+				{"name": "Edelbert Meusburger", "value": 1, "info": "Vorarlberg"},
+				{"name": "Siggi Neuschitzer", "value": 1, "info": "Kärnten"},
+				{"name": "Josef Resch", "value": 1, "info": "Tirol"},
+				{"name": "Alois Sundl", "value":1, "info": "Steiermark"}
+			]
+			},
+		{
+			"name": "Publikumsrat", 
+			"value": 6,
+			"children": [
+				{"name": "Josef Kirchberger", "value": 1, "info": "Kunst"},
+				{"name": "Franz Küberl", "value": 1, "info": "Religion"},
+				{"name": "Siegfried Meryn","value": 1, "info": "Eltern und Familien"},
+				{"name": "Bernadette Tischler", "value": 1, "info": "Konsumenten"},
+				{"name": "Gerhard Tötschinger", "value": 1, "info": "Ältere Menschen"},
+				{"name:": "Beate Wimmer-Puchinger", "value": 1, "info": "Hochschulen"}
+			]
+			},
+		{
+			"name": "Zentralbetriebsrat", 
+			"value": 5,
+			"children": [
+				{"name": "Gerhard Berti", "value": 1},
+				{"name": "Christiana Jankovics", "value": 1},
+				{"name": "Stefan Jung", "value": 1},
+				{"name": "Gerhard Moser", "value": 1},
+				{"name": "Robert Ziegler", "value": 1}
+			]
+		}
+	]
+}
