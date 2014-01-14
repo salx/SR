@@ -7,7 +7,9 @@ SiFu fragen:
 ToDo: 
 - Linien rund um Segmente zeichnen
 - Ordnen nach Parteifarben (da stecke ich gerade)
-- Buttons für: sex, Partei, Bestellungsgremien
+- Ordnen nach Gremien bei Parteien
+- Transitions für Buttons machen
+- sortieren des inneren Kreises nach Größe
 
 */
 
@@ -124,121 +126,126 @@ ToDo:
 		drawChart( root );
 	}
 	
-			//comments from mbostock:
-				// Compute the initial layout on the entire tree to sum sizes.
-	  			// Also compute the full name and fill color for each node,
-	  			// and stash the children so they can be restored as we descend.
+			
 	function drawChart(root){
 		var partition = d3.layout.partition()
 		.size([2 * Math.PI, radius]);
 
+		//comments from mbostock:
+		// Compute the initial layout on the entire tree to sum sizes.
+	  	// Also compute the full name and fill color for each node,
+	  	// and stash the children so they can be restored as we descend.
 		partition 
-				.value(function(d) { return d.value; })
-							.nodes(root)
-							.forEach(function(d){
-								d._children = d.children;
-								d.sum = d.value;
-								d.key = key(d); // siehe unten!
-								d.fill = fill(d); // siehe unten!
-							});		
+			.value(function(d) { return d.value; })
+			.nodes(root)
+			.forEach(function(d){
+				d._children = d.children;
+				d.sum = d.value;
+				d.key = key(d); // siehe unten!
+				d.fill = fill(d); // siehe unten!
+			});		
 							
-							// Now redefine the value function to use the previously-computed sum.
-						partition
-							.children(function(d, depth) { return depth < 2 ? d._children : null; })
-							.value(function(d) { return d.sum; });
+		// Now redefine the value function to use the previously-computed sum.
+		partition
+			.children(function(d, depth) { return depth < 2 ? d._children : null; })
+			.value(function(d) { return d.sum; });
 
-						svg.selectAll( '.center' ).remove();				
+		svg.selectAll( '.center' ).remove();				
 
-						 center = svg.append("g")
-						    .classed('center', true )
-							.on("click", zoomOut); 
+		//draw and re-draw the center and the center-label
+		center = svg.append("g")
+			.classed('center', true )
+			.on("click", zoomOut); 
 				
-						center.append("circle")
-							.attr("r", radius / 3);
+		center.append("circle")
+			.attr("r", radius / 3);
 				
-						center.append("title")
-							.text("zoom out");
+		center.append("title")
+			.text("zoom out");
 						
-						svg.selectAll("path").remove();
+		//remove the old circle segments
+		svg.selectAll("path").remove();
 
-						var path = svg.selectAll("path")
-							.data(partition.nodes(root).slice(1)) // was macht slice GENAU?
-						  .enter()
-						  	.append("path")
-						  	.attr("d", arc)
-						  	.style("fill", function(d) { return d.fill; })
-						  	.each(function(d) { this._current = updateArc(d); })//woher kommt _current auf einmal??
-						  	.on("click", zoomIn);
+		//draw the segments
+		var path = svg.selectAll("path")
+			.data(partition.nodes(root).slice(1)) // was macht slice GENAU?
+		  .enter()
+			.append("path")
+			.attr("d", arc)
+			.style("fill", function(d) { return d.fill; })
+			.each(function(d) { this._current = updateArc(d); })//woher kommt _current auf einmal??
+			.on("click", zoomIn);
 				
-						  path.append("title")
-						  	.text("zoom in");
+		path.append("title")
+			.text("zoom in");
 				
-						  var label = center.append("text")
-						  	.text("Stiftungsrat")
-						  	.attr("x", - 45 );
+		var label = center.append("text")
+			.text("Stiftungsrat")
+			.attr("x", - 45 );
 				
 				
-						function zoomIn(p){
-							if (p.depth > 1) p = p.parent;
-							if (!p.children) return;
-							zoom(p, p, p.name);
-							label.text("");
-						}
+		function zoomIn(p){
+			if (p.depth > 1) p = p.parent;
+			if (!p.children) return;
+				zoom(p, p, p.name);
+				label.text("");
+		}
 				
-						function zoomOut(p){
-							if (!p.parent) return; 
-							label.text("");
-							zoom(p.parent, p, p.parent.name);
-						}
+		function zoomOut(p){
+			if (!p.parent) return; 
+			label.text("");
+			zoom(p.parent, p, p.parent.name);
+		}
 				
-						function zoom(root, p, labelText ){
-							if (document.documentElement.__transition__) return; //to check for CSS transitions
+		function zoom(root, p, labelText ){
+			if (document.documentElement.__transition__) return; //to check for CSS transitions
 				
-							var enterArc,
-								exitArc,
-								outsideAngle = d3.scale.linear().domain([0, 2 * Math.PI]);
+			var enterArc,
+			exitArc,
+			outsideAngle = d3.scale.linear().domain([0, 2 * Math.PI]);
+					
+			function insideArc(d) {
+				return p.key > d.key
+					? {depth: d.depth - 1, x: 0, dx: 0} : p.key < d.key
+					? {depth: d.depth - 1, x: 2 * Math.PI, dx: 0}
+					: {depth: 0, x: 0, dx: 2 * Math.PI};
+			}
 				
-							function insideArc(d) {
-								return p.key > d.key
-									? {depth: d.depth - 1, x: 0, dx: 0} : p.key < d.key
-									? {depth: d.depth - 1, x: 2 * Math.PI, dx: 0}
-									: {depth: 0, x: 0, dx: 2 * Math.PI};
-							}
+			function outsideArc(d) {
+				return {depth: d.depth + 1, x: outsideAngle(d.x), dx: outsideAngle(d.x + d.dx) - outsideAngle(d.x)};
+			}
 				
-							function outsideArc(d) {
-								return {depth: d.depth + 1, x: outsideAngle(d.x), dx: outsideAngle(d.x + d.dx) - outsideAngle(d.x)};
-							}
+			center.datum(root);
 				
-							center.datum(root);
+			// When zooming in, arcs enter from the outside and exit to the inside.
+			// Entering outside arcs start from the old layout.
+			if (root === p) enterArc = outsideArc, exitArc = insideArc, outsideAngle.range([p.x, p.x+p.dx]);
 				
-							// When zooming in, arcs enter from the outside and exit to the inside.
-				    		// Entering outside arcs start from the old layout.
-				    		if (root === p) enterArc = outsideArc, exitArc = insideArc, outsideAngle.range([p.x, p.x+p.dx]);
+			path = path.data(partition.nodes(root).slice(1), function(d) { return d.key; });
 				
-				    		path = path.data(partition.nodes(root).slice(1), function(d) { return d.key; });
+			// When zooming out, arcs enter from the inside and exit to the outside.
+			// Exiting outside arcs transition to the new layout.
+			if (root !== p) enterArc = insideArc, exitArc = outsideArc, outsideAngle.range([p.x, p.x + p.dx]);
 				
-							// When zooming out, arcs enter from the inside and exit to the outside.
-				    		// Exiting outside arcs transition to the new layout.
-				    		if (root !== p) enterArc = insideArc, exitArc = outsideArc, outsideAngle.range([p.x, p.x + p.dx]);
+			d3.transition().duration(d3.event.altKey ? 7500:750).each(function(){
+				path.exit().transition()
+				.style("fill-opacity", function(d) { return d.depth === 1 + (root === p) ? 1 : 0; })
+				.attrTween("d", function(d) { return arcTween.call(this, exitArc(d)); })
+				.remove();
 				
-				    		d3.transition().duration(d3.event.altKey ? 7500:750).each(function(){
-				    			path.exit().transition()
-				    				.style("fill-opacity", function(d) { return d.depth === 1 + (root === p) ? 1 : 0; })
-				    				.attrTween("d", function(d) { return arcTween.call(this, exitArc(d)); })
-				    				.remove();
+				path.enter().append("path")
+					.style("fill-opacity", function(d) { return d.depth === 2 - (root ===p) ? 1 : 0; })
+					.style("fill", function(d) { return d.fill; })
+					.on("click", zoomIn)
+					.each(function(d) {this._current = enterArc(d); });
 				
-				    			path.enter().append("path")
-				    				.style("fill-opacity", function(d) { return d.depth === 2 - (root ===p) ? 1 : 0; })
-				    				.style("fill", function(d) { return d.fill; })
-				    				.on("click", zoomIn)
-				    				.each(function(d) {this._current = enterArc(d); });
-				
-				    			path.transition()
-				    				.each("end", function(){ label.text( labelText )} )// hier braucht's noch eine if-Abfrage f. Zoom-Out
-				    				.style("fill-opacity", 1)
-				    				.attrTween("d", function(d) { return arcTween.call(this, updateArc(d)); })
-				    		});
-						}}
+				 path.transition()
+					.each("end", function(){ label.text( labelText )} )// hier braucht's noch eine if-Abfrage f. Zoom-Out
+					.style("fill-opacity", 1)
+				    .attrTween("d", function(d) { return arcTween.call(this, updateArc(d)); })
+			});
+		}
+	}
 	
 	function key(d){
 		var k = [];
