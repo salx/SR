@@ -6,65 +6,65 @@
 		"name": "Bundesregierung", 
 		"value": 9,
 		"children": [
-			{"name": "Andrea Brem", "value": 1, "partei": "SPÖ"},
-			{"name": "Thomas Drozda", "value": 1},
-			{"name": "Rudolf Ertl", "value": 1},
-			{"name": "Alexander Hartig", "value": 1},
-			{"name": "Franz Krainer", "value": 1},
-			{"name": "Franz Medwenitsch", "value": 1},
-			{"name": "Rainer Rößlhuber", "value": 1},
-			{"name": "Andrea Schellner", "value": 1},
-			{"name": "Thomas Zach", "value": 1}
+			{"name": "Andrea Brem", "value": 1, "partei": "SPÖ", "sex": "f", "info": "Geschäftsführerin Wiener Frauenhäuser"},
+			{"name": "Thomas Drozda", "value": 1, "partei": "SPÖ", "sex": "m", "info": "Generaldirektor Vereinigte Bühnen Wien"},
+			{"name": "Rudolf Ertl", "value": 1, "partei": "SPÖ", "sex": "m", "info": "Vorstand Wiener Städtische"},
+			{"name": "Alexander Hartig", "value": 1, "partei": "Krone", "sex": "m", "info": "Aufsichtsrat Turnauer-Imperium"},
+			{"name": "Franz Krainer", "value": 1, "partei": "ÖVP", "sex": "m", "info": "Rechtsanwalt"},
+			{"name": "Franz Medwenitsch", "value": 1, "partei": "ÖVP", "sex": "m", "info": "Geschäftsführer Verband der Musikwirtschafts und Verwertungsgesellschaften"},
+			{"name": "Rainer Rößlhuber", "value": 1, "partei": "ÖVP", "sex": "m", "info": "Generalsekretät Sportunion"},
+			{"name": "Andrea Schellner", "value": 1, "partei": "SPÖ", "sex": "f", "info": "HFP Wirtschaftstreuhänder"},
+			{"name": "Thomas Zach", "value": 1, "partei": "SPÖ", "sex": "m", "info": "Management Staatsdruckerei"}
 		]
 		},
 		{
 			"name": "Parteien", 
 			"value": 6,
 			"children": [
-				{"name": "Wilfried Embacher", "value": 1,"info": "Grüne"},
-				{"name": "Dietmar Hoscher", "value": 1, "info": "SPÖ"},
-				{"name": "Peter Koren", "value": 1, "info": "ÖVP"},
-				{"name": "Werner Muhm", "value": 1, "info": "SPÖ"},
-				{"name": "Alexander Scheer", "value": 1, "info": "BZÖ"},
-				{"name": "Norbert Steger", "value": 1, "info": "FPÖ"}
+				{"name": "Wilfried Embacher", "value": 1,"partei": "Grüne", "sex": "m", "info": "Rechtsanwalt"},
+				{"name": "Dietmar Hoscher", "value": 1, "partei": "SPÖ", "sex": "m"},
+				{"name": "Peter Koren", "value": 1, "partei": "ÖVP", "sex": "m", "info": "Vize-Generalsekretär IV"},
+				{"name": "Werner Muhm", "value": 1, "partei": "SPÖ", "sex": "m", "info": "Direktor AK Wien"},
+				{"name": "Alexander Scheer", "value": 1, "partei": "BZÖ", "sex": "m"},
+				{"name": "Norbert Steger", "value": 1, "partei": "FPÖ", "sex": "m", "info": "Rechtsanwalt"}
 			]
 			},
 		{
 			"name": "Bundeslaender", 
 			"value": 9,
 			"children": [
-				{"name": "Margit Hauft", "value": 1, "info": "Oberösterreich"},
-				{"name": "Norbert Kettner", "value": 1, "info": "Wien"},
-				{"name": "Alberich Klinger", "value": 1, "info": "Niederösterreich"},
-				{"name": "Brigitte Kulovits-Rupp", "value": 1, "info": "Burgenland"},
-				{"name": "Matthias Limbeck", "value": 1, "info": "Salzburg"},
-				{"name": "Edelbert Meusburger", "value": 1, "info": "Vorarlberg"},
-				{"name": "Siggi Neuschitzer", "value": 1, "info": "Kärnten"},
-				{"name": "Josef Resch", "value": 1, "info": "Tirol"},
-				{"name": "Alois Sundl", "value":1, "info": "Steiermark"}
+				{"name": "Margit Hauft", "value": 1, "partei": "ÖVP", "sex": "f", "info": "Oberösterreich"},
+				{"name": "Norbert Kettner", "value": 1, "partei": "SPÖ", "sex": "m","info": "Wien"},
+				{"name": "Alberich Klinger", "value": 1, "partei": "ÖVP", "sex": "m", "info": "Niederösterreich"},
+				{"name": "Brigitte Kulovits-Rupp", "value": 1, "partei": "SPÖ", "sex": "f", "info": "Burgenland"},
+				{"name": "Matthias Limbeck", "value": 1, "partei": "ÖVP", "sex": "m", "info": "Salzburg"},
+				{"name": "Edelbert Meusburger", "value": 1, "partei": "ÖVP", "sex": "m", "info": "Vorarlberg"},
+				{"name": "Siggi Neuschitzer", "value": 1, "partei": "FPÖ", "sex": "m", "info": "Kärnten"},
+				{"name": "Josef Resch", "value": 1, "partei": "ÖVP", "sex": "m","info": "Tirol"},
+				{"name": "Alois Sundl", "value":1, "partei": "SPÖ", "sex": "m", "info": "Steiermark"}
 			]
 			},
 		{
 			"name": "Publikumsrat", 
 			"value": 6,
 			"children": [
-				{"name": "Josef Kirchberger", "value": 1, "info": "Kunst"},
-				{"name": "Franz Küberl", "value": 1, "info": "Religion"},
-				{"name": "Siegfried Meryn","value": 1, "info": "Eltern und Familien"},
-				{"name": "Bernadette Tischler", "value": 1, "info": "Konsumenten"},
-				{"name": "Gerhard Tötschinger", "value": 1, "info": "Ältere Menschen"},
-				{"name:": "Beate Wimmer-Puchinger", "value": 1, "info": "Hochschulen"}
+				{"name": "Josef Kirchberger", "value": 1, "partei": "SPÖ", "sex": "m", "info": "Kunst"},
+				{"name": "Franz Küberl", "value": 1, "partei": "unabhängig", "sex": "m", "info": "Religion"},
+				{"name": "Siegfried Meryn","value": 1, "partei": "SPÖ", "sex": "m", "info": "Eltern und Familien"},
+				{"name": "Bernadette Tischler", "value": 1, "partei": "SPÖ", "sex": "f", "info": "Konsumenten"},
+				{"name": "Gerhard Tötschinger", "value": 1, "partei": "ÖVP", "sex": "m", "info": "Ältere Menschen"},
+				{"name:": "Beate Wimmer-Puchinger", "value": 1, "partei": "SPÖ", "sex": "f", "info": "Hochschulen"}
 			]
 			},
 		{
 			"name": "Zentralbetriebsrat", 
 			"value": 5,
 			"children": [
-				{"name": "Gerhard Berti", "value": 1},
-				{"name": "Christiana Jankovics", "value": 1},
-				{"name": "Stefan Jung", "value": 1},
-				{"name": "Gerhard Moser", "value": 1},
-				{"name": "Robert Ziegler", "value": 1}
+				{"name": "Gerhard Berti", "value": 1, "partei": "SPÖ", "sex": "m", "info": "freigestellter Betriebsrat"},
+				{"name": "Christiana Jankovics", "value": 1, "partei": "unabhängig", "sex": "f", "info": "Redakteurin"},
+				{"name": "Stefan Jung", "value": 1, "partei": "", "sex": "m"},
+				{"name": "Gerhard Moser", "value": 1, "partei": "unabhängig", "sex": "m", "info": "Ö1 Literatur"},
+				{"name": "Robert Ziegler", "value": 1, "partei": "", "sex": "m"}
 			]
 		}
 	]
