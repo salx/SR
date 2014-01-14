@@ -47,6 +47,7 @@ ToDo:
 		.outerRadius(function(d){ return radius / 3 * (d.depth + 1) -1; });
 
 	var dataset;
+	var input = "gremien";
 
 	d3.json("Stiftungsrat.json", function(err, data){
 		dataset = data;
@@ -255,27 +256,67 @@ ToDo:
 	}
 
 	function fill(d){
-
+		console.log(d);
 		var p= d;
 		var c;
-
-		if(p.depth === 1){ //p= p.parent;
+		if(input === "gremien"){
+			if(p.depth === 1){ //p= p.parent;
 			//var c = d3.lab(color(p.name));
 			var c = "#999"
 			return c;
-		} else if(p.depth === 2) {
-			var colors = {
-				'SPÖ': 'red',
-				'ÖVP': 'black',
-				'FPÖ': 'blue',
-				'Grüne': 'green',
-				'BZÖ': 'orange',
-				'unabhängig': '#444',
-				'Kone': '#777'
-			}
+			} else if(p.depth === 2 ) {
+				var colors = {
+					'SPÖ': 'red',
+					'ÖVP': 'black',
+					'FPÖ': 'blue',
+					'Grüne': 'green',
+					'BZÖ': 'orange',
+					'unabhängig': '#444',
+					'Kone': '#777'
+				}
 			return colors[p.partei];
-		}
+			} 
+		} else if(input === "partei"){
+			if(p.depth === 1){
+				var colors = {
+					'SPÖ': 'red',
+					'ÖVP': 'black',
+					'FPÖ': 'blue',
+					'Grüne': 'green',
+					'BZÖ': 'orange',
+					'unabhängig': '#444',
+					'Kone': '#777'
+				}
+			return colors[p.name];
+			} else if(p.depth === 2){
+				var c = d3.lab(color(p.gremium));
+				return c;
+			}
+		} else if(input === "geschlecht"){
+			console.log(p);
+			if(p.depth === 1) {
+				var colors = {
+					'm': "#123",
+					'f': "#567"
+				}
+			    return colors[ p.name ];
+
+			} else if(p.depth === 2 ) {
+				var colors = {
+					'SPÖ': 'red',
+					'ÖVP': 'black',
+					'FPÖ': 'blue',
+					'Grüne': 'green',
+					'BZÖ': 'orange',
+					'unabhängig': '#444',
+					'Kone': '#777'
+				}
+			return colors[ p.partei ];
+			}
+		}	 
 	}
+
+	
 
 	function arcTween(b) {
 		var i = d3.interpolate(this._current, b);
@@ -290,6 +331,7 @@ ToDo:
 	}
 
 function change(){
+	input = this.value;
 	if(this.value === "gremien") {
 		transitionGremien();
 	} else if(this.value ==="partei"){
