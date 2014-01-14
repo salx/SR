@@ -170,25 +170,18 @@ SiFu fragen:
 			//var c = d3.lab(color(p.name));
 			var c = "#999"
 		//c.l = luminance(d.sum);
-		return c;
-		}
-		else if(p.depth === 2)
-			{
-			if(p.partei === "SPÖ")
-				var c = "red";
-			if(p.partei === "ÖVP")
-				var c = "black";
-			if(p.partei === "FPÖ")
-				var c = "blue";
-			if(p.partei === "Grüne")
-				var c = "green";
-			if(p.partei === "BZÖ")
-				var c = "orange";
-			if(p.partei === "unabhängig" )
-				var c = "grey";
-			if(p.partei === "Krone")
-				var c = "teal";
 			return c;
+		} else if(p.depth === 2) {
+			var colors = {
+				'SPÖ': 'red',
+				'ÖVP': 'black',
+				'FPÖ': 'blue',
+				'Grüne': 'green',
+				'BZÖ': 'orange',
+				'unabhängig': '#444',
+				'Kone': '#777'
+			}
+			return colors[p.partei];
 		}
 	}
 
