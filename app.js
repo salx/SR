@@ -6,7 +6,8 @@ SiFu fragen:
 
 ToDo: 
 - Linien rund um Segmente zeichnen
-- Ordnen nach Parteifarben
+- Ordnen nach Parteifarben (da stecke ich gerade)
+- Buttons für: Geschlecht, Partei, Bestellungsgremien
 
 */
 
@@ -169,9 +170,7 @@ ToDo:
 	}
 
 	function fill(d){
-		
-		//console.log(d);
-		//var i= d.
+
 		var p= d;
 		var c;
 
