@@ -130,7 +130,15 @@ ToDo:
 			
 	function drawChart(root){
 		var partition = d3.layout.partition()
-		.size([2 * Math.PI, radius]);
+		.size([2 * Math.PI, radius])
+		.sort(function(a, b) {
+			if(a.depth === 1){
+			return d3.ascending(a.name, b.name); 
+		}else if(a.depth === 2){
+			console.log( a.partei, b.partei, d3.ascending(a.partei, b.partei))
+			return d3.ascending(a.partei, b.partei); // wie nach Parteifarbe sortieren??
+		}
+		});
 
 		//comments from mbostock:
 		// Compute the initial layout on the entire tree to sum sizes.
@@ -315,8 +323,6 @@ ToDo:
 			}
 		}	 
 	}
-
-	
 
 	function arcTween(b) {
 		var i = d3.interpolate(this._current, b);
