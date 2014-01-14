@@ -15,7 +15,7 @@ SiFu fragen:
         //height = 500 - margin.top - margin.bottom;
         radius = Math.min(margin.top, margin.right, margin.bottom, margin.left) -10;
 
-	var color = d3.scale.category10();
+	var color = d3.scale.category20c();
 	//var color = ["#1b9e77","#d95f02", "#7570b3", "#e6ab02", "#ffff33" ]
 
 	/* im Originalcode, find ich aber eher verwirrend
@@ -167,7 +167,8 @@ SiFu fragen:
 		var c;
 
 		if(p.depth === 1){ //p= p.parent;
-			var c = d3.lab(color(p.name));
+			//var c = d3.lab(color(p.name));
+			var c = "#999"
 		//c.l = luminance(d.sum);
 		return c;
 		}
