@@ -5,6 +5,8 @@ SiFu fragen:
 . wie gebe ich die Farben als Array an (leichteste Frage)
 
 ToDo: 
+- Linien rund um Segmente zeichnen
+- Ordnen nach Parteifarben
 
 */
 
@@ -33,7 +35,13 @@ ToDo:
 	   	.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 	var partition = d3.layout.partition()
-		.sort(function(a, b) {return d3.ascending(a.name, b.name); })
+		.sort(function(a, b) {
+			if(a.depth === 1){
+			return d3.ascending(a.name, b.name); 
+		}else if(a.depth === 2){
+			return d3.ascending(a.partei, b.partei); // wie nach Parteifarbe sortieren??
+		}
+		})
 		.size([2 * Math.PI, radius])
 
 	var arc = d3.svg.arc()
