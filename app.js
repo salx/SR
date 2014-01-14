@@ -1,10 +1,10 @@
 /*
-SiFu fragen: 
+SiFu fragen:
 - wie kann ich Text-Labels dynamisch generieren UND ausrichten? (z.B.: Center)?
 - wie kann ich im Center Fotos verlinken ab einer gewissen Stufe?
 . wie gebe ich die Farben als Array an (leichteste Frage)
 
-ToDo: 
+ToDo:
 - Linien rund um Segmente zeichnen
 - Ordnen nach Parteifarben (da stecke ich gerade)
 - Ordnen nach Gremien bei Parteien
@@ -33,7 +33,7 @@ ToDo:
 	var partition = d3.layout.partition()
 		.sort(function(a, b) {
 			if(a.depth === 1){
-			return d3.ascending(a.name, b.name); 
+			return d3.ascending(a.name, b.name);
 		}else if(a.depth === 2){
 			return d3.ascending(a.partei, b.partei); // wie nach Parteifarbe sortieren??
 		}
@@ -46,11 +46,14 @@ ToDo:
 		.innerRadius(function(d){ return radius / 3 * d.depth; })
 		.outerRadius(function(d){ return radius / 3 * (d.depth + 1) -1; });
 
-	var dataset;
+	var dataset = [];
 	var input = "gremien";
 
 	d3.json("Stiftungsrat.json", function(err, data){
-		dataset = data;
+    var order = [ 'SPÖ', 'ÖVP', 'FPÖ', 'Grüne', 'BZÖ', 'unabhängig', 'unbekannt', 'Krone' ];
+    order.forEach( function( partei ) {
+      dataset = dataset.concat( data.filter( function( d ) { return d.partei === partei; } ) );
+    } );
 		transitionGremien();
 		d3.selectAll("input").on("change", change);
 	})
@@ -80,7 +83,7 @@ ToDo:
 		drawChart(root);
 	}
 
-	function transitionPartei(){ 
+	function transitionPartei(){
 		var root = {
 			name: 'Stiftungsrat',
 			value: 0,
@@ -126,25 +129,17 @@ ToDo:
 		root.children = d3.values( sexes );
 		drawChart( root );
 	}
-	
-			
-	function drawChart(root){
-		var partition = d3.layout.partition()
-		.size([2 * Math.PI, radius])
-		.sort(function(a, b) {
-			if(a.depth === 1){
-			return d3.ascending(a.name, b.name); 
-		}else if(a.depth === 2){
-			console.log( a.partei, b.partei, d3.ascending(a.partei, b.partei))
-			return d3.ascending(a.partei, b.partei); // wie nach Parteifarbe sortieren??
-		}
-		});
+
+
+  function drawChart(root){
+    var partition = d3.layout.partition()
+    .size([2 * Math.PI, radius]);
 
 		//comments from mbostock:
 		// Compute the initial layout on the entire tree to sum sizes.
 	  	// Also compute the full name and fill color for each node,
 	  	// and stash the children so they can be restored as we descend.
-		partition 
+		partition
 			.value(function(d) { return d.value; })
 			.nodes(root)
 			.forEach(function(d){
@@ -152,30 +147,26 @@ ToDo:
 				d.sum = d.value;
 				d.key = key(d); // siehe unten!
 				d.fill = fill(d); // siehe unten!
-			});		
-							
-		// Now redefine the value function to use the previously-computed sum.
-		partition
-			.children(function(d, depth) { return depth < 2 ? d._children : null; })
-			.value(function(d) { return d.sum; });
+			});
 
-		svg.selectAll( '.center' ).remove();				
+		svg.selectAll( '.center' ).remove();
 
 		//draw and re-draw the center and the center-label
 		center = svg.append("g")
 			.classed('center', true )
-			.on("click", zoomOut); 
-				
+			.on("click", zoomOut);
+
 		center.append("circle")
 			.attr("r", radius / 3);
-				
+
 		center.append("title")
 			.text("zoom out");
-						
+
 		//remove the old circle segments
 		svg.selectAll("path").remove();
 
 		//draw the segments
+    partition.nodes( root ).slice( 1 ); // D3 bugfix
 		var path = svg.selectAll("path")
 			.data(partition.nodes(root).slice(1)) // was macht slice GENAU?
 		  .enter()
@@ -183,71 +174,72 @@ ToDo:
 			.attr("d", arc)
 			.style("fill", function(d) { return d.fill; })
 			.each(function(d) { this._current = updateArc(d); })//woher kommt _current auf einmal??
+      .on( 'mouseover', function( d ) { console.log( d ) } )
 			.on("click", zoomIn);
-				
+
 		path.append("title")
 			.text("zoom in");
-				
+
 		var label = center.append("text")
 			.text("Stiftungsrat")
 			.attr("x", - 45 );
-				
-				
+
+
 		function zoomIn(p){
 			if (p.depth > 1) p = p.parent;
 			if (!p.children) return;
 				zoom(p, p, p.name);
 				label.text("");
 		}
-				
+
 		function zoomOut(p){
-			if (!p.parent) return; 
+			if (!p.parent) return;
 			label.text("");
 			zoom(p.parent, p, p.parent.name);
 		}
-				
+
 		function zoom(root, p, labelText ){
 			if (document.documentElement.__transition__) return; //to check for CSS transitions
-				
+
 			var enterArc,
 			exitArc,
 			outsideAngle = d3.scale.linear().domain([0, 2 * Math.PI]);
-					
+
 			function insideArc(d) {
 				return p.key > d.key
 					? {depth: d.depth - 1, x: 0, dx: 0} : p.key < d.key
 					? {depth: d.depth - 1, x: 2 * Math.PI, dx: 0}
 					: {depth: 0, x: 0, dx: 2 * Math.PI};
 			}
-				
+
 			function outsideArc(d) {
 				return {depth: d.depth + 1, x: outsideAngle(d.x), dx: outsideAngle(d.x + d.dx) - outsideAngle(d.x)};
 			}
-				
+
 			center.datum(root);
-				
+
 			// When zooming in, arcs enter from the outside and exit to the inside.
 			// Entering outside arcs start from the old layout.
 			if (root === p) enterArc = outsideArc, exitArc = insideArc, outsideAngle.range([p.x, p.x+p.dx]);
-				
+
 			path = path.data(partition.nodes(root).slice(1), function(d) { return d.key; });
-				
+
 			// When zooming out, arcs enter from the inside and exit to the outside.
 			// Exiting outside arcs transition to the new layout.
 			if (root !== p) enterArc = insideArc, exitArc = outsideArc, outsideAngle.range([p.x, p.x + p.dx]);
-				
+
 			d3.transition().duration(d3.event.altKey ? 7500:750).each(function(){
 				path.exit().transition()
 				.style("fill-opacity", function(d) { return d.depth === 1 + (root === p) ? 1 : 0; })
 				.attrTween("d", function(d) { return arcTween.call(this, exitArc(d)); })
 				.remove();
-				
+
 				path.enter().append("path")
 					.style("fill-opacity", function(d) { return d.depth === 2 - (root ===p) ? 1 : 0; })
 					.style("fill", function(d) { return d.fill; })
 					.on("click", zoomIn)
 					.each(function(d) {this._current = enterArc(d); });
-				
+
 				 path.transition()
 					.each("end", function(){ label.text( labelText )} )// hier braucht's noch eine if-Abfrage f. Zoom-Out
 					.style("fill-opacity", 1)
@@ -255,7 +247,7 @@ ToDo:
 			});
 		}
 	}
-	
+
 	function key(d){
 		var k = [];
 		var p = d;
@@ -264,7 +256,6 @@ ToDo:
 	}
 
 	function fill(d){
-		console.log(d);
 		var p= d;
 		var c;
 		if(input === "gremien"){
@@ -283,7 +274,7 @@ ToDo:
 					'Kone': '#777'
 				}
 			return colors[p.partei];
-			} 
+			}
 		} else if(input === "partei"){
 			if(p.depth === 1){
 				var colors = {
@@ -301,7 +292,6 @@ ToDo:
 				return c;
 			}
 		} else if(input === "geschlecht"){
-			console.log(p);
 			if(p.depth === 1) {
 				var colors = {
 					'm': "#123",
@@ -321,7 +311,7 @@ ToDo:
 				}
 			return colors[ p.partei ];
 			}
-		}	 
+		}
 	}
 
 	function arcTween(b) {
