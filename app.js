@@ -22,13 +22,6 @@ ToDo:
 	var color = d3.scale.category20c();
 	//var color = ["#1b9e77","#d95f02", "#7570b3", "#e6ab02", "#ffff33" ]
 
-	/* im Originalcode, find ich aber eher verwirrend
-	var luminance = d3.scale.sqrt()
-		.domain([0, 1e6])
-		.clamp(true)
-		.range([90, 20]);
-	SiFu: wofür braucht ma des??
-	*/
 		var svg = d3.select("body").append("svg")
 		.attr("width", margin.left + margin.right)
 		.attr("height", margin.top + margin.bottom )
@@ -76,7 +69,6 @@ ToDo:
 			.on("click", zoomOut); 
 
 		center.append("circle")
-			//.attr("class", "circle")
 			.attr("r", radius / 3);
 
 		center.append("title")
@@ -113,7 +105,7 @@ ToDo:
 		}
 
 		function zoom(root, p, labelText ){
-			if (document.documentElement.__transition__) return; //versteh ich nicht
+			if (document.documentElement.__transition__) return; //to check for CSS transitions
 
 			var enterArc,
 				exitArc,
@@ -166,7 +158,7 @@ ToDo:
 		var k = [];
 		var p = d;
 		while(p.depth) k.push(p.name), p=p.parent;
-		return k.reverse().join(".");//SiFu bitte erklären
+		return k.reverse().join(".");
 	}
 
 	function fill(d){
@@ -177,7 +169,6 @@ ToDo:
 		if(p.depth === 1){ //p= p.parent;
 			//var c = d3.lab(color(p.name));
 			var c = "#999"
-		//c.l = luminance(d.sum);
 			return c;
 		} else if(p.depth === 2) {
 			var colors = {
