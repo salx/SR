@@ -5,8 +5,6 @@ SiFu fragen:
 . wie gebe ich die Farben als Array an (leichteste Frage)
 
 ToDo:
-- Text in infobox dynamisch vergeben
-
  - POsition nicht über Margins, sondern mit width/height
 
 - Bilder und Labels in innerem Kreis
@@ -37,10 +35,10 @@ ToDo:
 	//var color = ["#1b9e77","#d95f02", "#7570b3", "#e6ab02", "#ffff33" ]
 
 		var svg = d3.select("svg")
-		.attr("width", margin.left + margin.right)
-		.attr("height", margin.top + margin.bottom )
+		.attr("width", 500)
+		.attr("height", 500)
 	   .append("g")
-	   	.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+	   	.attr("transform", "translate(" + (margin.left - 50) + "," + (margin.top - 50) + ")");
 
 	var arc = d3.svg.arc()
 		.startAngle(function(d){ return d.x; })
