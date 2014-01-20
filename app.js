@@ -5,10 +5,11 @@ SiFu fragen:
 . wie gebe ich die Farben als Array an (leichteste Frage)
 
 ToDo:
-- wie kann ich auf EINFACH li-Elemente einen Listener setzen? (siehe: http://www.nytimes.com/interactive/2012/02/13/us/politics/2013-budget-proposal-graphic.html)
+- Text in infobox dynamisch
+- Äußeren Kreis halbieren
+- Farben transparenter
+- Labels in Kreissegmten dynamisch vergeben
 - Linien rund um Segmente zeichnen
-- Ordnen nach Parteifarben (da stecke ich gerade)
-- Ordnen nach Gremien bei Parteien
 - Transitions für Buttons machen
 - sortieren des inneren Kreises nach Größe
 
@@ -16,7 +17,7 @@ ToDo:
 
 (function(){ //don't accidentially pollute the global scope
 
-  	var margin = {top: 255, right: 280, bottom: 250, left: 280},
+  	var margin = {top: 300, right: 280, bottom: 250, left: 280},
         radius = Math.min(margin.top, margin.right, margin.bottom, margin.left) -10;
 
 	var color = d3.scale.category20c();
@@ -27,16 +28,6 @@ ToDo:
 		.attr("height", margin.top + margin.bottom )
 	   .append("g")
 	   	.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-/*
-	var partition = d3.layout.partition()
-		.sort(function(a, b) {
-			if(a.depth === 1){
-			return d3.ascending(a.name, b.name);
-		}else if(a.depth === 2){
-			return d3.ascending(a.partei, b.partei); // wie nach Parteifarbe sortieren??
-		}
-		})
-*/
 
 	var arc = d3.svg.arc()
 		.startAngle(function(d){ return d.x; })
@@ -166,13 +157,12 @@ ToDo:
 		//draw the segments
     partition.nodes( root ).slice( 1 ); // D3 bugfix
 		var path = svg.selectAll("path")
-			.data(partition.nodes(root).slice(1)) // was macht slice GENAU?
+			.data(partition.nodes(root).slice(1))
 		  .enter()
 			.append("path")
 			.attr("d", arc)
 			.style("fill", function(d) { return d.fill; })
-			.each(function(d) { this._current = updateArc(d); })//woher kommt _current auf einmal??
-      //.on( 'mouseover', function( d ) { console.log( d ) } )
+			.each(function(d) { this._current = updateArc(d); })
 			.on("click", zoomIn);
 
 		path.append("title")

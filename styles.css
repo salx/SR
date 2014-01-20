@@ -1,5 +1,6 @@
 ul.navigation {
 	height: 2em;
+	width: 800px;
 	margin: 0;
 	padding: 0;
 	list-style: none;
@@ -45,10 +46,10 @@ ul#toc a{
 }
 
 #infobox{
-	background-color: #dd2;
-	border: 1px solid blue;
+	/*background-color: #dd2;*/
 	width: 300px;
 	margin-top: 15px;
+	padding: 10px 18px; 
 	float: left;
 	clear: both;
 }
@@ -63,27 +64,6 @@ circle {
 	/*stroke: #000;*/
 	pointer-events: all;
 }
-.x.axis path {
-	/*display: none;*/
-}
-/*
-g.x.axis {
-	margin: 10px;
-} SiFUu wieso funkt das nicht???
-*/
-
-.axis path {
-	fill: none;
-	stroke: #000;
-	stroke-width: 2px;
-	
-}
-.axis line {
-	fill: none;
-	stroke: #000;
-	stroke-width: 1px;
-	shape-rendering: crispEdges;
-}
 
 body {
 	font: 14px sans-serif;
@@ -92,16 +72,6 @@ body {
 	padding: 5px;
 }
 
-rect {
-	fill: #eee;
-
-}
-
-/*
-rect:hover{
-	fill: orange;
-}
-*/
 .d3-tip {
 	line-height: 1;
 	font-weight: bold;
