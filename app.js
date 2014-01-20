@@ -5,13 +5,29 @@ SiFu fragen:
 . wie gebe ich die Farben als Array an (leichteste Frage)
 
 ToDo:
-- Text in infobox dynamisch
+- Text in infobox dynamisch vergeben
 - Äußeren Kreis halbieren
-- Farben transparenter
+ - auf depth <1 .outerRadius mit anderen Werten
+ - SiFu: wie Transitions anpassen! - NaN Fehler
+
+ - POsition nicht über Margins, sondern mit width/height
+
+- Bilder und Labels in innerem Kreis
+	- alle arc-Elemente in eine gruppe? 
+	- auf die Gruppen Text, Bilder etc. appenden?
+
+- mouse-over
 - Labels in Kreissegmten dynamisch vergeben
 - Linien rund um Segmente zeichnen
+
 - Transitions für Buttons machen
-- sortieren des inneren Kreises nach Größe
+	- Methode transition außerhalb von drawChart definieren
+	- in drawChart aufrufen
+	- in change aufrufen
+	offen: was mus ich übergeben?
+
+- Farben transparenter
+	mit fill-opacity experimentieren....
 
 */
 
@@ -31,9 +47,14 @@ ToDo:
 
 	var arc = d3.svg.arc()
 		.startAngle(function(d){ return d.x; })
-		.endAngle(function(d){ return d.x + d.dx - 0.01 / (d.depth + 0.5); })//erklären...
+		.endAngle(function(d){ return d.x + d.dx - 0.01 / (d.depth + 0.5); })
 		.innerRadius(function(d){ return radius / 3 * d.depth; })
-		.outerRadius(function(d){ return radius / 3 * (d.depth + 1) -1; });
+		.outerRadius(function(d){ 
+			if(d.depth===1) {
+				return radius / 3 * (d.depth + 1) -1; 
+			}else if(d.depth>1)
+				return radius / 4 *(d.depth +1) -1; //NaN Fehler bei Transition!
+		}); 
 
 	var dataset = [];
 	var input = "geschlecht";
@@ -161,9 +182,19 @@ ToDo:
 		  .enter()
 			.append("path")
 			.attr("d", arc)
+			.attr("id", "path1")
 			.style("fill", function(d) { return d.fill; })
-			.each(function(d) { this._current = updateArc(d); })
+			.each(function(d) { this._current = updateArc(d); })// ohne das funkt zoomen nicht mehr
 			.on("click", zoomIn);
+
+		var text2 = path.append("text")
+			.attr("x", 6 ) //NaN Fehler
+			.attr("dy", 15);//NaN Fehler
+
+		text2.append("textPath")
+			.attr("stroke", "black")
+			.attr("xlink:href", "#path1")
+			.text("abcd");
 
 		path.append("title")
 			.text("zoom in");
