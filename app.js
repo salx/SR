@@ -50,7 +50,6 @@ wenn man dazwischen auf einen anderen Button drück stimmts nicht mehr, zurück 
 	// ruckelt leider. was kamma da machen?
 	//verdeckt manchmal das kastl. das sollt ma ändern. bloß wie...
 	// f und m brauch ma nicht...
-	//beim HInein-zoomen bleibt er stecken. und zwar, weil ich ans svg appened habe....deswegen gibt es streng genommen kein mouse.out
 	//noch ein paar "undefined"
 	// Styling: border? weniger zugeklatschte Hintergrund-Farbe?
 	// nur ein tip im gezoomten
@@ -223,8 +222,8 @@ wenn man dazwischen auf einen anderen Button drück stimmts nicht mehr, zurück 
 				}
 			})
 			.each(function(d) { this._current = updateArc(d); })// ohne das funkt zoomen nicht mehr
-			.on("mouseover", tip.show ) // call mouseOver or use tip.js :)
-			.on("moueout", tip.hide);//call mouseOut or use tip.js
+			.on("mouseover", tip.show ) //ich würd's ja eher weglassen auf der 1. ebene
+			.on("mouseout", tip.hide);
 
 		path
 			.exit()
@@ -244,6 +243,8 @@ wenn man dazwischen auf einen anderen Button drück stimmts nicht mehr, zurück 
 			}else{
 			label.text("")
 			}
+		path.on("mouseover", tip.show ) //aber hier könnte man ein photo dazu...
+		path.on("mouseout", tip.hide);
 	}
 
 	function zoomOut(p){
