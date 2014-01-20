@@ -16,16 +16,13 @@ ToDo:
 
 (function(){ //don't accidentially pollute the global scope
 
-  	var margin = {top: 350, right: 480, bottom: 350, left: 480},
-  	//SiFu: bitte erklären. Wieso nur Margins und kein width/height? (aus Beispiel: http://bl.ocks.org/mbostock/5944371)
-        //width = 960 - margin.left - margin.right,
-        //height = 500 - margin.top - margin.bottom;
+  	var margin = {top: 255, right: 280, bottom: 250, left: 280},
         radius = Math.min(margin.top, margin.right, margin.bottom, margin.left) -10;
 
 	var color = d3.scale.category20c();
 	//var color = ["#1b9e77","#d95f02", "#7570b3", "#e6ab02", "#ffff33" ]
 
-		var svg = d3.select("body").append("svg")
+		var svg = d3.select("svg")
 		.attr("width", margin.left + margin.right)
 		.attr("height", margin.top + margin.bottom )
 	   .append("g")
@@ -330,11 +327,9 @@ ToDo:
 function change(){
 	input = this.id;
 	console.log(this);
-	d3.selectAll("li")
+	d3.selectAll("li.selected")
 		.attr("class", "");//SiFu: das ist nicht schön, wie geht das bessr?
-	console.log(this);
-	//d3.this.attr("class", "selected"); //SiFu: wieso "undefined?"
-	//SiFu: wie kann ich das "class" attribut jetzt ändern??
+	d3.select(this).attr("class", "selected");
 	if(this.id === "gremien") {
 		transitionGremien();
 	} else if(this.id ==="partei"){
