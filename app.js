@@ -5,6 +5,7 @@ SiFu fragen:
 . wie gebe ich die Farben als Array an (leichteste Frage)
 
 ToDo:
+- wie kann ich auf EINFACH li-Elemente einen Listener setzen? (siehe: http://www.nytimes.com/interactive/2012/02/13/us/politics/2013-budget-proposal-graphic.html)
 - Linien rund um Segmente zeichnen
 - Ordnen nach Parteifarben (da stecke ich gerade)
 - Ordnen nach Gremien bei Parteien
@@ -47,15 +48,15 @@ ToDo:
 		.outerRadius(function(d){ return radius / 3 * (d.depth + 1) -1; });
 
 	var dataset = [];
-	var input = "gremien";
+	var input = "geschlecht";
 
 	d3.json("Stiftungsrat.json", function(err, data){
     var order = [ 'SPÖ', 'ÖVP', 'FPÖ', 'Grüne', 'BZÖ', 'unabhängig', 'unbekannt', 'Krone' ];
     order.forEach( function( partei ) {
       dataset = dataset.concat( data.filter( function( d ) { return d.partei === partei; } ) );
     } );
-		transitionGremien();
-		d3.selectAll("input").on("change", change);
+		transitionGeschlecht();
+		d3.selectAll("li").on("click", change);
 	})
 
 	function transitionGremien() {
@@ -174,7 +175,7 @@ ToDo:
 			.attr("d", arc)
 			.style("fill", function(d) { return d.fill; })
 			.each(function(d) { this._current = updateArc(d); })//woher kommt _current auf einmal??
-      .on( 'mouseover', function( d ) { console.log( d ) } )
+      //.on( 'mouseover', function( d ) { console.log( d ) } )
 			.on("click", zoomIn);
 
 		path.append("title")
@@ -327,12 +328,18 @@ ToDo:
 	}
 
 function change(){
-	input = this.value;
-	if(this.value === "gremien") {
+	input = this.id;
+	console.log(this);
+	d3.selectAll("li")
+		.attr("class", "");//SiFu: das ist nicht schön, wie geht das bessr?
+	console.log(this);
+	//d3.this.attr("class", "selected"); //SiFu: wieso "undefined?"
+	//SiFu: wie kann ich das "class" attribut jetzt ändern??
+	if(this.id === "gremien") {
 		transitionGremien();
-	} else if(this.value ==="partei"){
+	} else if(this.id ==="partei"){
 		transitionPartei();
-	} else if(this.value ==="geschlecht"){
+	} else if(this.id ==="geschlecht"){
 		transitionGeschlecht();
 	}
 

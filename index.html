@@ -7,11 +7,18 @@
 		<!--script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.min.js"></script-->
 	</head>
 	<body>
-		<form>
-			<label><input type="radio" name="view" value="gremien" checked>Bestellungsgremien</label>
-			<label><input type="radio" name="view" value="partei">Partei-Affinit&auml;t</label>
-			<label><input type="radio" name="view" value="geschlecht">Geschlecht</label>
-		</form>
+		<div>
+			<ul class="navigation chart">
+				<li id="geschlecht" class="selected">Geschlecht</li>
+				<li id ="gremien">Bestellungsgremien</li>
+				<li id ="partei">Partei-Affinit&auml;t</li>
+				 <!-- ::after - NYT code - was macht der ?-->
+			</ul>
+		</div>
+		<div class = "infocontent" id="infobox">
+			<h2>text</h2>
+			<p>Test-Text.</p>
+		</div>
 		<script src="app.js"></script>
 	</body>
 </html>
