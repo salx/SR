@@ -65,6 +65,16 @@ circle {
 	pointer-events: all;
 }
 
+.female{
+	fill: #30b68f;
+	/*opacity: 0.5;*/
+}
+
+.male{
+	fill: #cfb725;
+	/*opacity: 0.5;*/
+}
+
 body {
 	font: 14px sans-serif;
 	font-family: Arial;

@@ -9,13 +9,11 @@ ToDo:
 
 - Farben und Legende für Gremien, Geschlecht
 
-- Bilder und Labels in innerem Kreis
-	- alle arc-Elemente in eine gruppe? 
-	- auf die Gruppen Text, Bilder etc. appenden?
-
 - mouse-over
 - Labels in Kreissegmten dynamisch vergeben
 - Linien rund um Segmente zeichnen
+
+- Transition für Farben im Zentrum
 
 - Transitions für Buttons machen - wird kompliziert....
 	- Methode transition außerhalb von drawChart definieren
@@ -23,10 +21,15 @@ ToDo:
 	- in change aufrufen
 	offen: was mus ich übergeben?
 
-
 -bessere Farbgebung
 
 - Legende für Bestell-Gremien
+
+BUGS:
+- bei "Geschlecht": Transform mit Farben und Bildern funkt nur beim ersten Mal. 
+wenn man dazwischen auf einen anderen Button drück stimmts nicht mehr, zurück geht's auch nimma
+
+-Partei-Ordnung stimmt bei Geschlecht nicht (roter Ausreißer)
 
 */
 
@@ -157,18 +160,15 @@ ToDo:
 		svg.selectAll( '.center' ).remove();
 
 		//draw and re-draw the center and the center-label
-		center = svg.append("g")
+		var center = svg.append("g")
 			.classed('center', true )
 			.on("click", zoomOut);
 
-		center.append("circle")
+		var circle = center.append("circle")
 			.attr("r", radius / 3);
 
 		center.append("title")
 			.text("zoom out");
-
-		//remove the old circle segments
-		
 
 		//draw the segments
     	partition.nodes( root ).slice( 1 ); // D3 bugfix
@@ -214,6 +214,10 @@ ToDo:
 	function zoomOut(p){
 		if (!p.parent) return;
 		label.text("");
+		circle.classed("female", false);
+		circle.classed("male", false);
+		center.select("image")
+			.remove();
 		zoom(p.parent, p, p.parent.name);
 	}
 
@@ -263,13 +267,23 @@ ToDo:
 				.each("end", function(d, i){ 
 					if (i===0){
 						if(labelText === "m"){
-							console.log("here")
+							circle.classed("male", true)
 							center.append("image")
-							.attr("xlink:href", "icon_25455.png")
+							.attr("xlink:href", "icon_25455.svg")
+							.attr("x", "-50px")
+							.attr("y", "-50px")
+							.attr("width", "100px")
+							.attr("height", "100px")
 							}else if(labelText==="f"){
+								circle.classed("female", true)
 								center.append("image")
 								.attr("xlink:href", "icon_25454.png")
-							}else{label.text( labelText )} }
+								.attr("x", "-50px")
+								.attr("y", "-50px")
+								.attr("width", "100px")
+								.attr("height", "100px")
+							}else{
+								label.text( labelText )} }
 				})
 				//.style("fill-opacity", 1)
 				//.style("fill")
@@ -333,9 +347,9 @@ ToDo:
 		} else if(input === "geschlecht"){
 			if(p.depth === 1) {
 				var colors = {
-					//'m': "#cfb725",
+					'm': "#cfb725",
 					'f': "#30b68f",
-					'm': "#674956"
+					//'m': "#674956"
 					//'f': "#f18c30"
 				}
 			    return colors[ p.name ];
