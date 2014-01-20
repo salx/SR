@@ -212,6 +212,7 @@ wenn man dazwischen auf einen anderen Button drück stimmts nicht mehr, zurück 
 	}
 
 	function zoomOut(p){
+		console.log(p.parent)
 		if (!p.parent) return;
 		label.text("");
 		circle.classed("female", false);
