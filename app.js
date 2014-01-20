@@ -5,7 +5,9 @@ SiFu fragen:
 . wie gebe ich die Farben als Array an (leichteste Frage)
 
 ToDo:
- - POsition nicht über Margins, sondern mit width/height
+- bei: Partei rund um die "Gremien"-Grenzen eine Linie ziehen
+
+- Farben und Legende für Gremien, Geschlecht
 
 - Bilder und Labels in innerem Kreis
 	- alle arc-Elemente in eine gruppe? 
@@ -21,8 +23,10 @@ ToDo:
 	- in change aufrufen
 	offen: was mus ich übergeben?
 
-- Farben transparenter
-	mit fill-opacity experimentieren....
+
+-bessere Farbgebung
+
+- Legende für Bestell-Gremien
 
 */
 
@@ -31,7 +35,7 @@ ToDo:
   	var margin = {top: 300, right: 280, bottom: 250, left: 280},
         radius = Math.min(margin.top, margin.right, margin.bottom, margin.left) -10;
 
-	var color = d3.scale.category20c();
+	var color = d3.scale.category10();
 	//var color = ["#1b9e77","#d95f02", "#7570b3", "#e6ab02", "#ffff33" ]
 
 		var svg = d3.select("svg")
@@ -179,6 +183,13 @@ ToDo:
 		path
 			.attr("d", arc)
 			.style("fill", function(d) { return d.fill; })
+			.style("fill-opacity", function(d){
+				if(d.depth===2){
+					return 0.5;
+				}else{
+					return 1;
+				}
+			})
 			.each(function(d) { this._current = updateArc(d); })// ohne das funkt zoomen nicht mehr
 			
 		path
@@ -249,9 +260,28 @@ ToDo:
 				.each(function(d) {this._current = enterArc(d); });
 
 			 path.transition()
-				.each("end", function(){ label.text( labelText )} )// hier braucht's noch eine if-Abfrage f. Zoom-Out
-				.style("fill-opacity", 1)
+				.each("end", function(d, i){ 
+					if (i===0){
+						if(labelText === "m"){
+							console.log("here")
+							center.append("image")
+							.attr("xlink:href", "icon_25455.png")
+							}else if(labelText==="f"){
+								center.append("image")
+								.attr("xlink:href", "icon_25454.png")
+							}else{label.text( labelText )} }
+				})
+				//.style("fill-opacity", 1)
+				//.style("fill")
+				.style("fill-opacity", function(d){
+					if(d.depth===2){
+						return 0.5;
+					}else{
+						return 1;
+					}
+				})
 			    .attrTween("d", function(d) { return arcTween.call(this, updateArc(d)); })
+
 			});
 		}
 	}
@@ -296,14 +326,17 @@ ToDo:
 				}
 			return colors[p.name];
 			} else if(p.depth === 2){
-				var c = d3.lab(color(p.gremium));
+				var c = "#999";
+				//var c = d3.lab(color(p.gremium));
 				return c;
 			}
 		} else if(input === "geschlecht"){
 			if(p.depth === 1) {
 				var colors = {
-					'm': "#123",
-					'f': "#567"
+					//'m': "#cfb725",
+					'f': "#30b68f",
+					'm': "#674956"
+					//'f': "#f18c30"
 				}
 			    return colors[ p.name ];
 
