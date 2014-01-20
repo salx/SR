@@ -49,12 +49,8 @@ ToDo:
 		.startAngle(function(d){ return d.x; })
 		.endAngle(function(d){ return d.x + d.dx - 0.01 / (d.depth + 0.5); })
 		.innerRadius(function(d){ return radius / 3 * d.depth; })
-		.outerRadius(function(d){ 
-			if(d.depth===1) {
-				return radius / 3 * (d.depth + 1) -1; 
-			}else if(d.depth>1)
-				return radius / 4 *(d.depth +1) -1; //NaN Fehler bei Transition!
-		}); 
+		.outerRadius(function(d){ return radius / ( 2 + d.depth) * (d.depth + 1) -1; } // über depth den Wert schleichend verändern
+		); 
 
 	var dataset = [];
 	var input = "geschlecht";
@@ -187,15 +183,6 @@ ToDo:
 			.each(function(d) { this._current = updateArc(d); })// ohne das funkt zoomen nicht mehr
 			.on("click", zoomIn);
 
-		var text2 = path.append("text")
-			.attr("x", 6 ) //NaN Fehler
-			.attr("dy", 15);//NaN Fehler
-
-		text2.append("textPath")
-			.attr("stroke", "black")
-			.attr("xlink:href", "#path1")
-			.text("abcd");
-
 		path.append("title")
 			.text("zoom in");
 
@@ -222,7 +209,7 @@ ToDo:
 
 			var enterArc,
 			exitArc,
-			outsideAngle = d3.scale.linear().domain([0, 2 * Math.PI]);
+			outsideAngle = d3.scale.linear().domain([0, 3 * Math.PI]);
 
 			function insideArc(d) {
 				return p.key > d.key
