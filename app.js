@@ -6,9 +6,6 @@ SiFu fragen:
 
 ToDo:
 - Text in infobox dynamisch vergeben
-- Äußeren Kreis halbieren
- - auf depth <1 .outerRadius mit anderen Werten
- - SiFu: wie Transitions anpassen! - NaN Fehler
 
  - POsition nicht über Margins, sondern mit width/height
 
@@ -20,7 +17,7 @@ ToDo:
 - Labels in Kreissegmten dynamisch vergeben
 - Linien rund um Segmente zeichnen
 
-- Transitions für Buttons machen
+- Transitions für Buttons machen - wird kompliziert....
 	- Methode transition außerhalb von drawChart definieren
 	- in drawChart aufrufen
 	- in change aufrufen
@@ -169,19 +166,26 @@ ToDo:
 			.text("zoom out");
 
 		//remove the old circle segments
-		svg.selectAll("path").remove();
+		
 
 		//draw the segments
-    partition.nodes( root ).slice( 1 ); // D3 bugfix
+    	partition.nodes( root ).slice( 1 ); // D3 bugfix
 		var path = svg.selectAll("path")
-			.data(partition.nodes(root).slice(1))
-		  .enter()
+			.data(partition.nodes(root).slice(1));
+
+		path
+			.enter()
 			.append("path")
+			.on("click", zoomIn);
+
+		path
 			.attr("d", arc)
-			.attr("id", "path1")
 			.style("fill", function(d) { return d.fill; })
 			.each(function(d) { this._current = updateArc(d); })// ohne das funkt zoomen nicht mehr
-			.on("click", zoomIn);
+			
+		path
+			.exit()
+			.remove();
 
 		path.append("title")
 			.text("zoom in");
@@ -191,65 +195,65 @@ ToDo:
 			.attr("x", - 45 );
 
 
-		function zoomIn(p){
-			if (p.depth > 1) p = p.parent;
-			if (!p.children) return;
-				zoom(p, p, p.name);
-				label.text("");
-		}
-
-		function zoomOut(p){
-			if (!p.parent) return;
+	function zoomIn(p){
+		if (p.depth > 1) p = p.parent;
+		if (!p.children) return;
+			zoom(p, p, p.name);
 			label.text("");
-			zoom(p.parent, p, p.parent.name);
+	}
+
+	function zoomOut(p){
+		if (!p.parent) return;
+		label.text("");
+		zoom(p.parent, p, p.parent.name);
+	}
+
+	function zoom(root, p, labelText ){
+		if (document.documentElement.__transition__) return; //to check for CSS transitions
+
+		var enterArc,
+		exitArc,
+		outsideAngle = d3.scale.linear().domain([0, 3 * Math.PI]);
+
+		function insideArc(d) {
+			return p.key > d.key
+				? {depth: d.depth - 1, x: 0, dx: 0} : p.key < d.key
+				? {depth: d.depth - 1, x: 2 * Math.PI, dx: 0}
+				: {depth: 0, x: 0, dx: 2 * Math.PI};
 		}
 
-		function zoom(root, p, labelText ){
-			if (document.documentElement.__transition__) return; //to check for CSS transitions
+		function outsideArc(d) {
+			return {depth: d.depth + 1, x: outsideAngle(d.x), dx: outsideAngle(d.x + d.dx) - outsideAngle(d.x)};
+		}
 
-			var enterArc,
-			exitArc,
-			outsideAngle = d3.scale.linear().domain([0, 3 * Math.PI]);
+		center.datum(root);
 
-			function insideArc(d) {
-				return p.key > d.key
-					? {depth: d.depth - 1, x: 0, dx: 0} : p.key < d.key
-					? {depth: d.depth - 1, x: 2 * Math.PI, dx: 0}
-					: {depth: 0, x: 0, dx: 2 * Math.PI};
-			}
+		// When zooming in, arcs enter from the outside and exit to the inside.
+		// Entering outside arcs start from the old layout.
+		if (root === p) enterArc = outsideArc, exitArc = insideArc, outsideAngle.range([p.x, p.x+p.dx]);
 
-			function outsideArc(d) {
-				return {depth: d.depth + 1, x: outsideAngle(d.x), dx: outsideAngle(d.x + d.dx) - outsideAngle(d.x)};
-			}
+		path = path.data(partition.nodes(root).slice(1), function(d) { return d.key; });
 
-			center.datum(root);
+		// When zooming out, arcs enter from the inside and exit to the outside.
+		// Exiting outside arcs transition to the new layout.
+		if (root !== p) enterArc = insideArc, exitArc = outsideArc, outsideAngle.range([p.x, p.x + p.dx]);
 
-			// When zooming in, arcs enter from the outside and exit to the inside.
-			// Entering outside arcs start from the old layout.
-			if (root === p) enterArc = outsideArc, exitArc = insideArc, outsideAngle.range([p.x, p.x+p.dx]);
+		d3.transition().duration(d3.event.altKey ? 7500:750).each(function(){
+			path.exit().transition()
+			.style("fill-opacity", function(d) { return d.depth === 1 + (root === p) ? 1 : 0; })
+			.attrTween("d", function(d) { return arcTween.call(this, exitArc(d)); })
+			.remove();
 
-			path = path.data(partition.nodes(root).slice(1), function(d) { return d.key; });
+			path.enter().append("path")
+				.style("fill-opacity", function(d) { return d.depth === 2 - (root ===p) ? 1 : 0; })
+				.style("fill", function(d) { return d.fill; })
+				.on("click", zoomIn)
+				.each(function(d) {this._current = enterArc(d); });
 
-			// When zooming out, arcs enter from the inside and exit to the outside.
-			// Exiting outside arcs transition to the new layout.
-			if (root !== p) enterArc = insideArc, exitArc = outsideArc, outsideAngle.range([p.x, p.x + p.dx]);
-
-			d3.transition().duration(d3.event.altKey ? 7500:750).each(function(){
-				path.exit().transition()
-				.style("fill-opacity", function(d) { return d.depth === 1 + (root === p) ? 1 : 0; })
-				.attrTween("d", function(d) { return arcTween.call(this, exitArc(d)); })
-				.remove();
-
-				path.enter().append("path")
-					.style("fill-opacity", function(d) { return d.depth === 2 - (root ===p) ? 1 : 0; })
-					.style("fill", function(d) { return d.fill; })
-					.on("click", zoomIn)
-					.each(function(d) {this._current = enterArc(d); });
-
-				 path.transition()
-					.each("end", function(){ label.text( labelText )} )// hier braucht's noch eine if-Abfrage f. Zoom-Out
-					.style("fill-opacity", 1)
-				    .attrTween("d", function(d) { return arcTween.call(this, updateArc(d)); })
+			 path.transition()
+				.each("end", function(){ label.text( labelText )} )// hier braucht's noch eine if-Abfrage f. Zoom-Out
+				.style("fill-opacity", 1)
+			    .attrTween("d", function(d) { return arcTween.call(this, updateArc(d)); })
 			});
 		}
 	}
@@ -334,10 +338,12 @@ ToDo:
 
 function change(){
 	input = this.id;
-	console.log(this);
 	d3.selectAll("li.selected")
-		.attr("class", "");//SiFu: das ist nicht schön, wie geht das bessr?
+		.attr("class", "");
 	d3.select(this).attr("class", "selected");
+	d3.selectAll(".text")
+		.classed("hidden", true);
+	d3.select(".text."+this.id).classed("hidden", false);
 	if(this.id === "gremien") {
 		transitionGremien();
 	} else if(this.id ==="partei"){

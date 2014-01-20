@@ -133,3 +133,7 @@ svg {
 	float: left;
 	clear: both;
 }
+
+.hidden{
+	display: none
+}
