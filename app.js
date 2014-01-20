@@ -170,6 +170,24 @@ wenn man dazwischen auf einen anderen Button drück stimmts nicht mehr, zurück 
 		center.append("title")
 			.text("zoom out");
 
+			// eigentlich sollte das alles in eine funktion, aber ich hab zuviel angst, dass dann was kaputt is...
+		if(input === "geschlecht")
+			{center.append("image")
+					.attr("xlink:href", "icon_21902.svg")
+					.attr("x", "-50px")
+					.attr("y", "-50px")
+					.attr("width", "100px")
+					.attr("height", "100px")
+		}else{
+			var label = center.append("text")
+			.text("Stiftungsrat")
+			.attr("x", - 45 );
+		}
+
+
+		center.append("title")
+			.text("zoom out");
+
 		//draw the segments
     	partition.nodes( root ).slice( 1 ); // D3 bugfix
 		var path = svg.selectAll("path")
@@ -199,26 +217,36 @@ wenn man dazwischen auf einen anderen Button drück stimmts nicht mehr, zurück 
 		path.append("title")
 			.text("zoom in");
 
-		var label = center.append("text")
-			.text("Stiftungsrat")
-			.attr("x", - 45 );
-
 
 	function zoomIn(p){
 		if (p.depth > 1) p = p.parent;
 		if (!p.children) return;
 			zoom(p, p, p.name);
-			label.text("");
+			if(input === "geschlecht"){
+				center.select("image")
+				.remove();
+			}else{
+			label.text("")
+			}
 	}
 
 	function zoomOut(p){
-		console.log(p.parent)
+		//console.log(p.parent)
 		if (!p.parent) return;
-		label.text("");
+		if(input === "geschlecht"){
+				circle.classed("female", false);
+			circle.classed("male", false);
+				center.select("image")
+				.remove();
+			}else{
+				label.text("")
+			}
+		/*label.text("");
 		circle.classed("female", false);
 		circle.classed("male", false);
 		center.select("image")
 			.remove();
+		*/
 		zoom(p.parent, p, p.parent.name);
 	}
 
@@ -262,6 +290,7 @@ wenn man dazwischen auf einen anderen Button drück stimmts nicht mehr, zurück 
 				.style("fill-opacity", function(d) { return d.depth === 2 - (root ===p) ? 1 : 0; })
 				.style("fill", function(d) { return d.fill; })
 				.on("click", zoomIn)
+				//.on("click", function(d){if(d.depth<2)zoomIn()} ) //--> funkt 1 mal, danach nur beim äußeren, das schon 1 mal dran war
 				.each(function(d) {this._current = enterArc(d); });
 
 			 path.transition()
@@ -284,7 +313,22 @@ wenn man dazwischen auf einen anderen Button drück stimmts nicht mehr, zurück 
 								.attr("width", "100px")
 								.attr("height", "100px")
 							}else{
-								label.text( labelText )} }
+								//label.text( labelText )}
+								//eigentlich: mit methoden-Aufruf einfacher....aber ich fürcht mich...
+								if(input === "geschlecht"){
+									center.append("image")
+									.attr("xlink:href", "icon_21902.svg")
+									.attr("x", "-50px")
+									.attr("y", "-50px")
+									.attr("width", "100px")
+									.attr("height", "100px")
+								}else{
+									var label = center.append("text")
+									.text("Stiftungsrat")
+									.attr("x", - 45 );
+								}	
+							} 
+						}
 				})
 				//.style("fill-opacity", 1)
 				//.style("fill")
