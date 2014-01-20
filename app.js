@@ -1,10 +1,10 @@
 /*
 SiFu fragen:
 - wie kann ich Text-Labels dynamisch generieren UND ausrichten? (z.B.: Center)?
-- wie kann ich im Center Fotos verlinken ab einer gewissen Stufe?
-. wie gebe ich die Farben als Array an (leichteste Frage)
+- wie gebe ich die Farben als Array an (leichteste Frage), OK, muss ich wahrschinlich als ordinal scale anlegen
 
 ToDo:
+- Tip ruckelt
 - bei: Partei rund um die "Gremien"-Grenzen eine Linie ziehen
 
 - Farben und Legende für Gremien, Geschlecht
@@ -29,11 +29,11 @@ BUGS:
 - bei "Geschlecht": Transform mit Farben und Bildern funkt nur beim ersten Mal. 
 wenn man dazwischen auf einen anderen Button drück stimmts nicht mehr, zurück geht's auch nimma
 
--Partei-Ordnung stimmt bei Geschlecht nicht (roter Ausreißer)
+-Partei-Ordnung stimmt bei Geschlecht nur jedes zweite Mal (roter Ausreißer)...
 
 */
 
-(function(){ //don't accidentially pollute the global scope
+(function(){
 
   	var margin = {top: 300, right: 280, bottom: 250, left: 280},
         radius = Math.min(margin.top, margin.right, margin.bottom, margin.left) -10;
@@ -46,6 +46,20 @@ wenn man dazwischen auf einen anderen Button drück stimmts nicht mehr, zurück 
 		.attr("height", 500)
 	   .append("g")
 	   	.attr("transform", "translate(" + (margin.left - 50) + "," + (margin.top - 50) + ")");
+
+	// ruckelt leider. was kamma da machen?
+	//verdeckt manchmal das kastl. das sollt ma ändern. bloß wie...
+	// f und m brauch ma nicht...
+	//beim HInein-zoomen bleibt er stecken. und zwar, weil ich ans svg appened habe....deswegen gibt es streng genommen kein mouse.out
+	//noch ein paar "undefined"
+	// Styling: border? weniger zugeklatschte Hintergrund-Farbe?
+	// nur ein tip im gezoomten
+	var tip = d3.tip()
+	.attr("class", "d3-tip")
+	.offset([-10, 0])
+	.html( function(d){return "<text><strong>"+d.name+":</br>"+d.partei+",</br>"+d.info+"</strong></text>"});
+
+	svg.call(tip);
 
 	var arc = d3.svg.arc()
 		.startAngle(function(d){ return d.x; })
@@ -209,13 +223,15 @@ wenn man dazwischen auf einen anderen Button drück stimmts nicht mehr, zurück 
 				}
 			})
 			.each(function(d) { this._current = updateArc(d); })// ohne das funkt zoomen nicht mehr
-			
+			.on("mouseover", tip.show ) // call mouseOver or use tip.js :)
+			.on("moueout", tip.hide);//call mouseOut or use tip.js
+
 		path
 			.exit()
 			.remove();
 
 		path.append("title")
-			.text("zoom in");
+			.text("zoom in")
 
 
 	function zoomIn(p){
@@ -367,8 +383,8 @@ wenn man dazwischen auf einen anderen Button drück stimmts nicht mehr, zurück 
 					'FPÖ': 'blue',
 					'Grüne': 'green',
 					'BZÖ': 'orange',
-					'unabhängig': '#444',
-					'Kone': '#777'
+					'unabhängig': '#999',
+					'Krone': '#999'
 				}
 			return colors[p.partei];
 			}
@@ -380,8 +396,8 @@ wenn man dazwischen auf einen anderen Button drück stimmts nicht mehr, zurück 
 					'FPÖ': 'blue',
 					'Grüne': 'green',
 					'BZÖ': 'orange',
-					'unabhängig': '#444',
-					'Kone': '#777'
+					'unabhängig': '#999',
+					'Krone': '#999'
 				}
 			return colors[p.name];
 			} else if(p.depth === 2){
@@ -406,8 +422,8 @@ wenn man dazwischen auf einen anderen Button drück stimmts nicht mehr, zurück 
 					'FPÖ': 'blue',
 					'Grüne': 'green',
 					'BZÖ': 'orange',
-					'unabhängig': '#444',
-					'Kone': '#777'
+					'unabhängig': '#999',
+					'Krone': '#999'
 				}
 			return colors[ p.partei ];
 			}
@@ -441,8 +457,18 @@ function change(){
 	} else if(this.id ==="geschlecht"){
 		transitionGeschlecht();
 	}
+}
+
+
+/*
+function mouseOver(){
 
 }
+
+function mouseOut(){
+
+}
+*/
 
 //d3.select(self.frameElement).style("height", margin.top + margin.bottom + "px");
 

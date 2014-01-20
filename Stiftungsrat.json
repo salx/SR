@@ -1,4 +1,4 @@
-[
+﻿[
   {"name": "Andrea Brem", "value": 1, "partei": "SPÖ", "sex": "f", "info": "Geschäftsführerin Wiener Frauenhäuser", "gremium": "Bundesregierung"},
   {"name": "Thomas Drozda", "value": 1, "partei": "SPÖ", "sex": "m", "info": "Generaldirektor Vereinigte Bühnen Wien", "gremium": "Bundesregierung"},
   {"name": "Rudolf Ertl", "value": 1, "partei": "SPÖ", "sex": "m", "info": "Vorstand Wiener Städtische", "gremium": "Bundesregierung"},
@@ -31,7 +31,7 @@
   {"name:": "Beate Wimmer-Puchinger", "value": 1, "partei": "SPÖ", "sex": "f", "info": "Hochschulen", "gremium": "Publikumsrat"},
   {"name": "Gerhard Berti", "value": 1, "partei": "SPÖ", "sex": "m", "info": "freigestellter Betriebsrat", "gremium": "Zentralbetriebsrat"},
   {"name": "Christiana Jankovics", "value": 1, "partei": "unabhängig", "sex": "f", "info": "Redakteurin", "gremium": "Zentralbetriebsrat"},
-  {"name": "Stefan Jung", "value": 1, "partei": "unbekannt", "sex": "m", "gremium": "Zentralbetriebsrat"},
+  {"name": "Stefan Jung", "value": 1, "partei": "unabhängig", "sex": "m", "gremium": "Zentralbetriebsrat"},
   {"name": "Gerhard Moser", "value": 1, "partei": "unabhängig", "sex": "m", "info": "Ö1 Literatur", "gremium": "Zentralbetriebsrat"},
-  {"name": "Robert Ziegler", "value": 1, "partei": "unbekannt", "sex": "m", "gremium": "Zentralbetriebsrat"}
+  {"name": "Robert Ziegler", "value": 1, "partei": "unabhängig", "sex": "m", "gremium": "Zentralbetriebsrat"}
 ]
