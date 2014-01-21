@@ -45,6 +45,10 @@ ul#toc a{
 	text-decoration: none;
 }
 
+h3{
+	font-size: 17px;
+}
+
 #infobox{
 	/*background-color: #dd2;*/
 	width: 300px;

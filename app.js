@@ -4,7 +4,8 @@ SiFu fragen:
 - wie gebe ich die Farben als Array an (leichteste Frage), OK, muss ich wahrschinlich als ordinal scale anlegen
 
 ToDo:
-- Tip ruckelt
+- Tips: auf der zoom-Ebene mit Fotos
+- Tips schöner stylen
 - bei: Partei rund um die "Gremien"-Grenzen eine Linie ziehen
 
 - Farben und Legende für Gremien, Geschlecht
@@ -255,6 +256,8 @@ wenn man dazwischen auf einen anderen Button drück stimmts nicht mehr, zurück 
 			circle.classed("male", false);
 				center.select("image")
 				.remove();
+			d3.selectAll(".text").classed("hidden", true);
+			d3.select(".text.geschlecht").classed("hidden", false);
 			}else{
 				label.text("")
 			}
@@ -321,6 +324,8 @@ wenn man dazwischen auf einen anderen Button drück stimmts nicht mehr, zurück 
 							.attr("y", "-50px")
 							.attr("width", "100px")
 							.attr("height", "100px")
+							d3.selectAll(".text").classed("hidden", true)
+							d3.select(".text.m").classed("hidden", false);
 							}else if(labelText==="f"){
 								circle.classed("female", true)
 								center.append("image")
@@ -329,6 +334,8 @@ wenn man dazwischen auf einen anderen Button drück stimmts nicht mehr, zurück 
 								.attr("y", "-50px")
 								.attr("width", "100px")
 								.attr("height", "100px")
+								d3.selectAll(".text").classed("hidden", true)
+								d3.select(".text.f").classed("hidden", false);
 							}else{
 								//label.text( labelText )}
 								//eigentlich: mit methoden-Aufruf einfacher....aber ich fürcht mich...
