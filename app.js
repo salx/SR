@@ -67,10 +67,11 @@ wenn man dazwischen auf einen anderen Button drück stimmts nicht mehr, zurück 
 	var input = "geschlecht";
 
 	d3.json("Stiftungsrat.json", function(err, data){
-    var order = [ 'SPÖ', 'ÖVP', 'FPÖ', 'Grüne', 'BZÖ', 'unabhängig', 'unbekannt', 'Krone' ];
-    order.forEach( function( partei ) {
-      dataset = dataset.concat( data.filter( function( d ) { return d.partei === partei; } ) );
-    } );
+    	var order = [ 'SPÖ', 'ÖVP', 'FPÖ', 'Grüne', 'BZÖ', 'unabhängig', 'unbekannt', 'Krone' ];
+    	order.forEach( function( partei ) {
+      		dataset = dataset.concat( data.filter( function( d ) { return d.partei === partei; } ) );
+    	} );
+		
 		transitionGeschlecht();
 		d3.selectAll("li").on("click", change);
 	})
