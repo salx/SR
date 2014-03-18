@@ -32,6 +32,44 @@ wenn man dazwischen auf einen anderen Button drück stimmts nicht mehr, zurück 
 
 -Partei-Ordnung stimmt bei Geschlecht nur jedes zweite Mal (roter Ausreißer)...
 
+FEHLERANALSYE
+1
+- Laden, Ansicht Geschlecht: Zoom-in funktioniert, zoom-out ebenfalls
+- Klick auf eines der anderen Tabs
+- Klick auf Geschlecht
+- zoom in funktioniert fehlerfrei
+- zoom out liefert den Fehler_ cannot read property 'parent ' of undefined.
+- der Fehler passiert nicht, wenn: 
+Die Ansicht als INITIAL-Ansicht geladen wird
+ODER 
+das erste Mal nur 1 child in der Zoom-Ebene liegt. Danach funktionieren auch alle anderen richtig.
+	Klick auf Partei-Gremien 
+	zuerst auf eine Kleinpartei klicken.
+	Danach funktionieren auch die großen Werte richtig.
+ODER
+Bestellgremien funktioniert, wenn bei GESCHLECHT nicht mehr zurück gezoomt wurde.
+Dann funktioniert aber Partei-Affinität nicht mehr.
+
+Das heißt alles funktioniert richtig, bei Neu Laden, Geschlecht
+ODER
+Partei-Affinität auf grau, geld oder grün klicken. DANACH funktionieren auch alle anderen.
+
+WICHTIG:
+In beiden Fällen gibt es danach KEIN Mouse-Over mehr. 
+
+Scheinbar, weil: die Zoom Funktion vollständig ausgeführt wird. 
+Das heißt: bei der kaputten Transition, wird zoom() nicht vollständig ausgeführt. 
+Deswegen sind die Objekte kaputt?
+
+ODER: irgend etwas stranges passiert mit den Daten...denn anders lässt sich die 
+Ansichts-Übergreifende Abhängigkeit nicht erklären
+
+DAS PROBLEM IST IN ZEILE 408!!! Dieser Daten-Joint wird aufgerufen, wenn ich nur die Buttons wechsle, 
+also auch, wenn ich NICHT zoome
+
+Augerufen werden aber nur die transisitionGremien() etc., die wiederum rufen drawChart(). 
+zoom() sollte doch außerhalb definiert sein. Oder nicht.
+
 */
 
 (function(){
@@ -98,6 +136,7 @@ wenn man dazwischen auf einen anderen Button drück stimmts nicht mehr, zurück 
 		} );
 
 		root.children = d3.values( gremien );
+		//console.log(root);
 		drawChart(root);
 	}
 
@@ -190,13 +229,13 @@ wenn man dazwischen auf einen anderen Button drück stimmts nicht mehr, zurück 
 					.attr("height", "100px")
 		}else{
 			var label = center.append("text")
-			.text("Stiftungsrat")
+			.text("Stiftungsrat")//zoom-in einen undefined-fehler
 			.attr("x", - 45 );
 		}
 
 
 		center.append("title")
-			.text("zoom out");
+			.text("zoom out");// zoom-in undefined fehler
 
 		//draw the segments
     	partition.nodes( root ).slice( 1 ); // D3 bugfix
@@ -231,21 +270,25 @@ wenn man dazwischen auf einen anderen Button drück stimmts nicht mehr, zurück 
 
 
 	function zoomIn(p){
-		if (p.depth > 1) p = p.parent;
-		if (!p.children) return;
+		console.log(p)
+		if (p.depth > 1) p = p.parent; 
+		if (!p.children) {console.log("no children"); return;}//wird nie ausgeführt!!! FIx!
 			zoom(p, p, p.name);
 			if(input === "geschlecht"){
 				center.select("image")
 				.remove();
 			}else{
-			label.text("")
+				label.text("")//undefined fehler
+
 			}
 		path.on("mouseover", tip.show ) //aber hier könnte man ein photo dazu...
 		path.on("mouseout", tip.hide);
 	}
 
 	function zoomOut(p){
-		//console.log(p.parent)
+		//console.log("here")wird ausgeführt
+		console.log(p); //undefined.
+		//console.log(p.parent);
 		if (!p.parent) return;
 		if(input === "geschlecht"){
 				circle.classed("female", false);
@@ -267,6 +310,7 @@ wenn man dazwischen auf einen anderen Button drück stimmts nicht mehr, zurück 
 	}
 
 	function zoom(root, p, labelText ){
+
 		if (document.documentElement.__transition__) return; //to check for CSS transitions
 
 		var enterArc,
@@ -291,7 +335,7 @@ wenn man dazwischen auf einen anderen Button drück stimmts nicht mehr, zurück 
 		if (root === p) enterArc = outsideArc, exitArc = insideArc, outsideAngle.range([p.x, p.x+p.dx]);
 
 		path = path.data(partition.nodes(root).slice(1), function(d) { return d.key; });
-
+		
 		// When zooming out, arcs enter from the inside and exit to the outside.
 		// Exiting outside arcs transition to the new layout.
 		if (root !== p) enterArc = insideArc, exitArc = outsideArc, outsideAngle.range([p.x, p.x + p.dx]);
@@ -350,6 +394,7 @@ wenn man dazwischen auf einen anderen Button drück stimmts nicht mehr, zurück 
 							} 
 						}
 				})
+//console.log("ZOOM!") wenn das hier steht, gibt es in de rnächsten Zeile einen undefined-Fehler!!!
 				//.style("fill-opacity", 1)
 				//.style("fill")
 				.style("fill-opacity", function(d){
@@ -366,6 +411,7 @@ wenn man dazwischen auf einen anderen Button drück stimmts nicht mehr, zurück 
 	}
 
 	function key(d){
+		console.log("ZOOM!")//WIESO WIRD DAS AUFGERUFEN; OBWOHL ICH NICHT ZOOME!!!!
 		var k = [];
 		var p = d;
 		while(p.depth) k.push(p.name), p=p.parent;
@@ -463,17 +509,5 @@ function change(){
 	}
 }
 
-
-/*
-function mouseOver(){
-
-}
-
-function mouseOut(){
-
-}
-*/
-
-//d3.select(self.frameElement).style("height", margin.top + margin.bottom + "px");
 
 })();
