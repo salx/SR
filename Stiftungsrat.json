@@ -9,10 +9,10 @@
   {"name": "Andrea Schellner", "value": 1, "partei": "SPÖ", "sex": "f", "info": "HFP Wirtschaftstreuhänder", "gremium": "Bundesregierung"},
   {"name": "Thomas Zach", "value": 1, "partei": "SPÖ", "sex": "m", "info": "Management Staatsdruckerei", "gremium": "Bundesregierung"},
   {"name": "Wilfried Embacher", "value": 1,"partei": "Grüne", "sex": "m", "info": "Rechtsanwalt", "gremium": "Parteien"},
-  {"name": "Dietmar Hoscher", "value": 1, "partei": "SPÖ", "sex": "m", "gremium": "Parteien"},
+  {"name": "Dietmar Hoscher", "value": 1, "partei": "SPÖ", "sex": "m", "info": "test", "gremium": "Parteien"},
   {"name": "Peter Koren", "value": 1, "partei": "ÖVP", "sex": "m", "info": "Vize-Generalsekretär IV", "gremium": "Parteien"},
   {"name": "Werner Muhm", "value": 1, "partei": "SPÖ", "sex": "m", "info": "Direktor AK Wien", "gremium": "Parteien"},
-  {"name": "Alexander Scheer", "value": 1, "partei": "BZÖ", "sex": "m", "gremium": "Parteien"},
+  {"name": "Alexander Scheer", "value": 1, "partei": "BZÖ", "sex": "m", "info": "test", "gremium": "Parteien"},
   {"name": "Norbert Steger", "value": 1, "partei": "FPÖ", "sex": "m", "info": "Rechtsanwalt", "gremium": "Parteien"},
   {"name": "Margit Hauft", "value": 1, "partei": "ÖVP", "sex": "f", "info": "Oberösterreich", "gremium": "Bundeslaender"},
   {"name": "Norbert Kettner", "value": 1, "partei": "SPÖ", "sex": "m","info": "Wien", "gremium": "Bundeslaender"},
@@ -28,10 +28,10 @@
   {"name": "Siegfried Meryn","value": 1, "partei": "SPÖ", "sex": "m", "info": "Eltern und Familien", "gremium": "Publikumsrat"},
   {"name": "Bernadette Tischler", "value": 1, "partei": "SPÖ", "sex": "f", "info": "Konsumenten", "gremium": "Publikumsrat"},
   {"name": "Gerhard Tötschinger", "value": 1, "partei": "ÖVP", "sex": "m", "info": "Ältere Menschen", "gremium": "Publikumsrat"},
-  {"name:": "Beate Wimmer-Puchinger", "value": 1, "partei": "SPÖ", "sex": "f", "info": "Hochschulen", "gremium": "Publikumsrat"},
+  {"name": "Beate Wimmer-Puchinger", "value": 1, "partei": "SPÖ", "sex": "f", "info": "Hochschulen", "gremium": "Publikumsrat"},
   {"name": "Gerhard Berti", "value": 1, "partei": "SPÖ", "sex": "m", "info": "freigestellter Betriebsrat", "gremium": "Zentralbetriebsrat"},
   {"name": "Christiana Jankovics", "value": 1, "partei": "unabhängig", "sex": "f", "info": "Redakteurin", "gremium": "Zentralbetriebsrat"},
-  {"name": "Stefan Jung", "value": 1, "partei": "unabhängig", "sex": "m", "gremium": "Zentralbetriebsrat"},
+  {"name": "Stefan Jung", "value": 1, "partei": "unabhängig", "sex": "m", "info": "test", "gremium": "Zentralbetriebsrat"},
   {"name": "Gerhard Moser", "value": 1, "partei": "unabhängig", "sex": "m", "info": "Ö1 Literatur", "gremium": "Zentralbetriebsrat"},
-  {"name": "Robert Ziegler", "value": 1, "partei": "unabhängig", "sex": "m", "gremium": "Zentralbetriebsrat"}
+  {"name": "Robert Ziegler", "value": 1, "partei": "unabhängig", "sex": "m", "info": "test","gremium": "Zentralbetriebsrat"}
 ]

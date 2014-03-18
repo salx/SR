@@ -64,12 +64,6 @@ Deswegen sind die Objekte kaputt?
 ODER: irgend etwas stranges passiert mit den Daten...denn anders lässt sich die 
 Ansichts-Übergreifende Abhängigkeit nicht erklären
 
-DAS PROBLEM IST IN ZEILE 408!!! Dieser Daten-Joint wird aufgerufen, wenn ich nur die Buttons wechsle, 
-also auch, wenn ich NICHT zoome
-
-Augerufen werden aber nur die transisitionGremien() etc., die wiederum rufen drawChart(). 
-zoom() sollte doch außerhalb definiert sein. Oder nicht.
-
 */
 
 (function(){
@@ -188,9 +182,10 @@ zoom() sollte doch außerhalb definiert sein. Oder nicht.
 	}
 
 
-  function drawChart(root){
-    var partition = d3.layout.partition()
-    .size([2 * Math.PI, radius]);
+  	function drawChart(root){
+  		//console.log(root); - immer gleich
+   	 	var partition = d3.layout.partition()
+    	.size([2 * Math.PI, radius]);
 
 		//comments from mbostock:
 		// Compute the initial layout on the entire tree to sum sizes.
@@ -227,15 +222,15 @@ zoom() sollte doch außerhalb definiert sein. Oder nicht.
 					.attr("y", "-50px")
 					.attr("width", "100px")
 					.attr("height", "100px")
-		}else{
-			var label = center.append("text")
-			.text("Stiftungsrat")//zoom-in einen undefined-fehler
-			.attr("x", - 45 );
-		}
+			}else{
+				var label = center.append("text")
+				.text("Stiftungsrat")//zoom-in einen undefined-fehler
+				.attr("x", - 45 );
+			}
 
 
 		center.append("title")
-			.text("zoom out");// zoom-in undefined fehler
+			.text("zoom out");
 
 		//draw the segments
     	partition.nodes( root ).slice( 1 ); // D3 bugfix
@@ -252,13 +247,14 @@ zoom() sollte doch außerhalb definiert sein. Oder nicht.
 			.style("fill", function(d) { return d.fill; })
 			.style("fill-opacity", function(d){
 				if(d.depth===2){
+					console.log("depth === 2")//wenn ich bei den Buttons hin und her klicke, nicht aber beim zoomen!
 					return 0.5;
 				}else{
 					return 1;
 				}
 			})
 			.each(function(d) { this._current = updateArc(d); })// ohne das funkt zoomen nicht mehr
-			.on("mouseover", tip.show ) //ich würd's ja eher weglassen auf der 1. ebene
+			.on("mouseover", tip.show )
 			.on("mouseout", tip.hide);
 
 		path
@@ -267,13 +263,15 @@ zoom() sollte doch außerhalb definiert sein. Oder nicht.
 
 		path.append("title")
 			.text("zoom in")
+	
 
-
-	function zoomIn(p){
-		console.log(p)
-		if (p.depth > 1) p = p.parent; 
-		if (!p.children) {console.log("no children"); return;}//wird nie ausgeführt!!! FIx!
-			zoom(p, p, p.name);
+		function zoomIn(p){
+			console.log(p)
+			if (p.depth > 1) p = p.parent; 
+			if (!p.children) {console.log("no children"); return;}//wird nie ausgeführt!!! FIx!
+			
+			zoom(p, p, p.name); //wird manchmal nicht vollständig ausgeführt - bloß wieso??
+			
 			if(input === "geschlecht"){
 				center.select("image")
 				.remove();
@@ -281,70 +279,71 @@ zoom() sollte doch außerhalb definiert sein. Oder nicht.
 				label.text("")//undefined fehler
 
 			}
-		path.on("mouseover", tip.show ) //aber hier könnte man ein photo dazu...
-		path.on("mouseout", tip.hide);
-	}
+			path.on("mouseover", tip.show )
+			path.on("mouseout", tip.hide);
+		}
 
-	function zoomOut(p){
-		//console.log("here")wird ausgeführt
-		console.log(p); //undefined.
-		//console.log(p.parent);
-		if (!p.parent) return;
-		if(input === "geschlecht"){
-				circle.classed("female", false);
+		function zoomOut(p){
+			console.log(p); //undefined.
+			//console.log(p.parent);
+			if (!p.parent) return;
+			if(input === "geschlecht"){
+					circle.classed("female", false);
+				circle.classed("male", false);
+					center.select("image")
+					.remove();
+				d3.selectAll(".text").classed("hidden", true);
+				d3.select(".text.geschlecht").classed("hidden", false);
+				}else{
+					label.text("")
+				}
+			/*label.text("");
+			circle.classed("female", false);
 			circle.classed("male", false);
-				center.select("image")
+			center.select("image")
 				.remove();
-			d3.selectAll(".text").classed("hidden", true);
-			d3.select(".text.geschlecht").classed("hidden", false);
-			}else{
-				label.text("")
+			*/
+			zoom(p.parent, p, p.parent.name);
+		}
+
+		function zoom(root, p, labelText ){
+
+			if (document.documentElement.__transition__) return; //to check for CSS transitions
+
+			var enterArc,
+			exitArc,
+			outsideAngle = d3.scale.linear().domain([0, 3 * Math.PI]);
+
+			function insideArc(d) {
+				return p.key > d.key
+					? {depth: d.depth - 1, x: 0, dx: 0} : p.key < d.key
+					? {depth: d.depth - 1, x: 2 * Math.PI, dx: 0}
+					: {depth: 0, x: 0, dx: 2 * Math.PI};
 			}
-		/*label.text("");
-		circle.classed("female", false);
-		circle.classed("male", false);
-		center.select("image")
-			.remove();
-		*/
-		zoom(p.parent, p, p.parent.name);
-	}
 
-	function zoom(root, p, labelText ){
+			function outsideArc(d) {
+				return {depth: d.depth + 1, x: outsideAngle(d.x), dx: outsideAngle(d.x + d.dx) - outsideAngle(d.x)};
+			}
 
-		if (document.documentElement.__transition__) return; //to check for CSS transitions
+			center.datum(root);//kanns daran liegen?
+			//console.log("here")
+			//console.log(center.datum(root));
 
-		var enterArc,
-		exitArc,
-		outsideAngle = d3.scale.linear().domain([0, 3 * Math.PI]);
+			// When zooming in, arcs enter from the outside and exit to the inside.
+			// Entering outside arcs start from the old layout.
+			if (root === p) enterArc = outsideArc, exitArc = insideArc, outsideAngle.range([p.x, p.x+p.dx]);
 
-		function insideArc(d) {
-			return p.key > d.key
-				? {depth: d.depth - 1, x: 0, dx: 0} : p.key < d.key
-				? {depth: d.depth - 1, x: 2 * Math.PI, dx: 0}
-				: {depth: 0, x: 0, dx: 2 * Math.PI};
-		}
+			path = path.data(partition.nodes(root).slice(1), function(d) { return d.key; });//hier wird immer das selbe zurückgeleifert. 
+			
+			// When zooming out, arcs enter from the inside and exit to the outside.
+			// Exiting outside arcs transition to the new layout.
+			if (root !== p) enterArc = insideArc, exitArc = outsideArc, outsideAngle.range([p.x, p.x + p.dx]);
 
-		function outsideArc(d) {
-			return {depth: d.depth + 1, x: outsideAngle(d.x), dx: outsideAngle(d.x + d.dx) - outsideAngle(d.x)};
-		}
-
-		center.datum(root);
-
-		// When zooming in, arcs enter from the outside and exit to the inside.
-		// Entering outside arcs start from the old layout.
-		if (root === p) enterArc = outsideArc, exitArc = insideArc, outsideAngle.range([p.x, p.x+p.dx]);
-
-		path = path.data(partition.nodes(root).slice(1), function(d) { return d.key; });
-		
-		// When zooming out, arcs enter from the inside and exit to the outside.
-		// Exiting outside arcs transition to the new layout.
-		if (root !== p) enterArc = insideArc, exitArc = outsideArc, outsideAngle.range([p.x, p.x + p.dx]);
-
-		d3.transition().duration(d3.event.altKey ? 7500:750).each(function(){
-			path.exit().transition()
-			.style("fill-opacity", function(d) { return d.depth === 1 + (root === p) ? 1 : 0; })
-			.attrTween("d", function(d) { return arcTween.call(this, exitArc(d)); })
-			.remove();
+			d3.transition().duration(d3.event.altKey ? 7500:750).each(function(){
+				path.exit().transition()
+				.style("fill-opacity", function(d) { return d.depth === 1 + (root === p) ? 1 : 0; })
+				.attrTween("d", function(d) { return arcTween.call(this, exitArc(d)); })
+				.remove();
 
 			path.enter().append("path")
 				.style("fill-opacity", function(d) { return d.depth === 2 - (root ===p) ? 1 : 0; })
@@ -353,7 +352,7 @@ zoom() sollte doch außerhalb definiert sein. Oder nicht.
 				//.on("click", function(d){if(d.depth<2)zoomIn()} ) //--> funkt 1 mal, danach nur beim äußeren, das schon 1 mal dran war
 				.each(function(d) {this._current = enterArc(d); });
 
-			 path.transition()
+			path.transition()
 				.each("end", function(d, i){ 
 					if (i===0){
 						if(labelText === "m"){
@@ -393,8 +392,7 @@ zoom() sollte doch außerhalb definiert sein. Oder nicht.
 								}	
 							} 
 						}
-				})
-//console.log("ZOOM!") wenn das hier steht, gibt es in de rnächsten Zeile einen undefined-Fehler!!!
+					})
 				//.style("fill-opacity", 1)
 				//.style("fill")
 				.style("fill-opacity", function(d){
@@ -405,18 +403,19 @@ zoom() sollte doch außerhalb definiert sein. Oder nicht.
 					}
 				})
 			    .attrTween("d", function(d) { return arcTween.call(this, updateArc(d)); })
-
 			});
 		}
 	}
 
-	function key(d){
-		console.log("ZOOM!")//WIESO WIRD DAS AUFGERUFEN; OBWOHL ICH NICHT ZOOME!!!!
+	
+	function key(d){//kann's das sein?
+		console.log(d)
 		var k = [];
 		var p = d;
-		while(p.depth) k.push(p.name), p=p.parent;
+		while(p.depth) console.log("key"), k.push(p.name), p=p.parent; // pushed nur bei p.depth! - das gibt es aber nicht, am Anfang
 		return k.reverse().join(".");
 	}
+	
 
 	function fill(d){
 		var p= d;
