@@ -42,18 +42,13 @@ wenn man dazwischen auf einen anderen Button drück stimmts nicht mehr, zurück 
 	var color = d3.scale.category10();
 	//var color = ["#1b9e77","#d95f02", "#7570b3", "#e6ab02", "#ffff33" ]
 
-		var svg = d3.select("svg")
-		.attr("width", 500)
-		.attr("height", 500)
-	   .append("g")
-	   	.attr("transform", "translate(" + (margin.left - 50) + "," + (margin.top - 50) + ")");
+	var svg = d3.select("svg")
+	.attr("width", 500)
+	.attr("height", 500)
+	.append("g")
+	.attr("transform", "translate(" + (margin.left - 50) + "," + (margin.top - 50) + ")");
 
-	// ruckelt leider. was kamma da machen?
-	//verdeckt manchmal das kastl. das sollt ma ändern. bloß wie...
-	// f und m brauch ma nicht...
-	//noch ein paar "undefined"
-	// Styling: border? weniger zugeklatschte Hintergrund-Farbe?
-	// nur ein tip im gezoomten
+
 	var tip = d3.tip()
 	.attr("class", "d3-tip")
 	.offset([-10, 0])
